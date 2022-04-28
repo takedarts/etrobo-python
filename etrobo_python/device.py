@@ -1,4 +1,7 @@
-from typing import Tuple
+try:
+    from typing import Tuple
+except BaseException:
+    pass
 
 
 class Motor(object):
