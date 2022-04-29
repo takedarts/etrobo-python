@@ -50,6 +50,9 @@ class ColorSensor(etrobo_python.ColorSensor):
     def get_brightness(self) -> int:
         return self.color_sensor.get_brightness()
 
+    def get_ambient(self) -> int:
+        return self.color_sensor.get_ambient()
+
     def get_raw_color(self) -> Tuple[int, int, int]:
         return self.color_sensor.get_raw_color()
 

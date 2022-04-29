@@ -19,6 +19,9 @@ class ColorSensor(object):
     def get_brightness(self) -> int:
         raise NotImplementedError()
 
+    def get_ambient(self) -> int:
+        raise NotImplementedError()
+
     def get_raw_color(self) -> Tuple[int, int, int]:
         raise NotImplementedError()
 
