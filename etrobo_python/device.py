@@ -26,3 +26,11 @@ class ColorSensor(object):
 class TouchSensor(object):
     def is_pressed(self) -> bool:
         raise NotImplementedError()
+
+
+class SonarSensor(object):
+    def listen(self) -> bool:
+        raise NotImplementedError()
+
+    def get_distance(self) -> int:
+        raise NotImplementedError()

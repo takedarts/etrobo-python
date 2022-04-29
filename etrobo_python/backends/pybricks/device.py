@@ -1,4 +1,4 @@
-from etrobo_python import ColorSensor, Motor, TouchSensor
+import etrobo_python
 
 import pybricks.ev3devices as ev3dev
 from pybricks.parameters import Port
@@ -13,11 +13,13 @@ def create_device(device_type: str, port: str) -> Any:
     ev3port = get_ev3port(port)
 
     if device_type == 'motor':
-        return MotorImpl(ev3port)
+        return Motor(ev3port)
     elif device_type == 'color_sensor':
-        return ColorSensorImpl(ev3port)
+        return ColorSensor(ev3port)
     elif device_type == 'touch_sensor':
-        return TouchSensorImpl(ev3port)
+        return TouchSensor(ev3port)
+    elif device_type == 'sonar_sensor':
+        return SonarSensor(ev3port)
     else:
         raise NotImplementedError(
             'Unsupported device: {}'.format(device_type))
@@ -34,7 +36,7 @@ def get_ev3port(port: str) -> Port:
         raise Exception('Unknown port: {}'.format(port))
 
 
-class MotorImpl(Motor):
+class Motor(etrobo_python.Motor):
     def __init__(self, port: Port) -> None:
         self.motor = ev3dev.Motor(port)
 
@@ -49,7 +51,7 @@ class MotorImpl(Motor):
             self.motor.brake()
 
 
-class ColorSensorImpl(ColorSensor):
+class ColorSensor(etrobo_python.ColorSensor):
     def __init__(self, port: Port) -> None:
         self.color_sensor = ev3dev.ColorSensor(port)
 
@@ -60,9 +62,20 @@ class ColorSensorImpl(ColorSensor):
         return self.color_sensor.rgb()
 
 
-class TouchSensorImpl(TouchSensor):
+class TouchSensor(etrobo_python.TouchSensor):
     def __init__(self, port: Port) -> None:
         self.touch_sensor = ev3dev.TouchSensor(port)
 
     def is_pressed(self) -> bool:
         return self.touch_sensor.pressed()
+
+
+class SonarSensor(etrobo_python.SonarSensor):
+    def __init__(self, port: Port) -> None:
+        self.sonar_sensor = ev3dev.UltrasonicSensor(port)
+
+    def listen(self) -> bool:
+        return self.sonar_sensor.presence()
+
+    def get_distance(self) -> int:
+        return self.sonar_sensor.distance()

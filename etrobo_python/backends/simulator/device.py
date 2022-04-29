@@ -1,7 +1,6 @@
 from typing import Any, Tuple
 
-from etrobo_python import ColorSensor, Motor, TouchSensor
-
+import etrobo_python
 from . import connector
 
 
@@ -9,11 +8,13 @@ def create_device(device_type: str, port: str) -> Any:
     ev3port = get_ev3port(port)
 
     if device_type == 'motor':
-        return MotorImpl(ev3port)
+        return Motor(ev3port)
     elif device_type == 'color_sensor':
-        return ColorSensorImpl(ev3port)
+        return ColorSensor(ev3port)
     elif device_type == 'touch_sensor':
-        return TouchSensorImpl(ev3port)
+        return TouchSensor(ev3port)
+    elif device_type == 'sonar_sensor':
+        return SonarSensor(ev3port)
     else:
         raise NotImplementedError(f'Unsupported device: {device_type}')
 
@@ -28,7 +29,7 @@ def get_ev3port(port: str) -> int:
         raise Exception(f'Unknown port: {port}')
 
 
-class MotorImpl(Motor):
+class Motor(etrobo_python.Motor):
     def __init__(self, port: int) -> None:
         self.motor = connector.Motor(port)
 
@@ -42,7 +43,7 @@ class MotorImpl(Motor):
         self.motor.set_brake(brake)
 
 
-class ColorSensorImpl(ColorSensor):
+class ColorSensor(etrobo_python.ColorSensor):
     def __init__(self, port: int) -> None:
         self.color_sensor = connector.ColorSensor()
 
@@ -53,9 +54,20 @@ class ColorSensorImpl(ColorSensor):
         return self.color_sensor.get_raw_color()
 
 
-class TouchSensorImpl(TouchSensor):
+class TouchSensor(etrobo_python.TouchSensor):
     def __init__(self, port: int) -> None:
         self.touch_sensor = connector.TouchSensor()
 
     def is_pressed(self) -> bool:
         return self.touch_sensor.is_pressed()
+
+
+class SonarSensor(etrobo_python.SonarSensor):
+    def __init__(self, port: int) -> None:
+        self.sonar_sensor = connector.SonarSensor()
+
+    def listen(self) -> bool:
+        return self.sonar_sensor.listen()
+
+    def get_distance(self) -> int:
+        return self.sonar_sensor.get_distance()

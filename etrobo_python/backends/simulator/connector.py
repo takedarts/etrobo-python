@@ -143,3 +143,11 @@ class ColorSensor(object):
 class TouchSensor(object):
     def is_pressed(self) -> bool:
         return _read_values('<i', 144)[0] != 0
+
+
+class SonarSensor(object):
+    def listen(self) -> bool:
+        return _read_values('<i', 124)[0] != 0
+
+    def get_distance(self) -> int:
+        return _read_values('<i', 120)[0]
