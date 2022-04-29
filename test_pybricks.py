@@ -11,19 +11,6 @@ class LineTracer(object):
     def __init__(self) -> None:
         self.running = False
 
-    def trace_line(
-        self,
-        right_motor: Motor,
-        left_motor: Motor,
-        color_sensor: ColorSensor,
-    ) -> None:
-        brightness = color_sensor.get_brightness() - TARGET
-        right_pwm = round(POWER + PID_P * brightness)
-        left_pwm = round(POWER - PID_P * brightness)
-
-        right_motor.set_pwm(right_pwm)
-        left_motor.set_pwm(left_pwm)
-
     def __call__(
         self,
         right_motor: Motor,
@@ -34,11 +21,15 @@ class LineTracer(object):
         if touch_sensor.is_pressed():
             self.running = True
 
-        if self.running:
-            self.trace_line(
-                right_motor=right_motor,
-                left_motor=left_motor,
-                color_sensor=color_sensor)
+        if not self.running:
+            return
+
+        brightness = color_sensor.get_brightness() - TARGET
+        right_pwm = round(POWER + PID_P * brightness)
+        left_pwm = round(POWER - PID_P * brightness)
+
+        right_motor.set_pwm(right_pwm)
+        left_motor.set_pwm(left_pwm)
 
 
 def main():

@@ -1,7 +1,8 @@
 from typing import Any, Tuple
 
-import etrobosim.ev3api as ev3
 from etrobo_python import ColorSensor, Motor, TouchSensor
+
+from . import connector
 
 
 def create_device(device_type: str, port: str) -> Any:
@@ -18,61 +19,39 @@ def create_device(device_type: str, port: str) -> Any:
 
 
 def get_ev3port(port: str) -> int:
-    if port == 'A':
-        return ev3.ePortM.PORT_A
-    elif port == 'B':
-        return ev3.ePortM.PORT_B
-    elif port == 'C':
-        return ev3.ePortM.PORT_C
-    elif port == 'D':
-        return ev3.ePortM.PORT_D
-    elif port == '1':
-        return ev3.ePortS.PORT_1
-    elif port == '2':
-        return ev3.ePortS.PORT_2
-    elif port == '3':
-        return ev3.ePortS.PORT_3
-    elif port == '4':
-        return ev3.ePortS.PORT_4
+    if port in ('A', 'B', 'C', 'D'):
+        return ('A', 'B', 'C', 'D').index(port)
+    if port in ('1', '2', '3', '4'):
+        return -1
     else:
         raise Exception(f'Unknown port: {port}')
 
 
 class MotorImpl(Motor):
     def __init__(self, port: int) -> None:
-        self.motor = ev3.Motor(port, True, ev3.MotorType.LARGE_MOTOR)
-        self.motor.reset()
-
-    def ev3device(self) -> Any:
-        return self.motor
+        self.motor = connector.Motor(port)
 
     def set_pwm(self, pwm: int) -> None:
-        self.motor.setPWM(pwm)
+        self.motor.set_pwm(pwm)
 
     def set_brake(self, brake: bool) -> None:
-        self.motor.setBrake(brake)
+        self.motor.set_brake(brake)
 
 
 class ColorSensorImpl(ColorSensor):
     def __init__(self, port: int) -> None:
-        self.color_sensor = ev3.ColorSensor(port)
-
-    def ev3device(self) -> Any:
-        return self.color_sensor
+        self.color_sensor = connector.ColorSensor()
 
     def get_brightness(self) -> int:
-        return self.color_sensor.getBrightness()
+        return self.color_sensor.get_brightness()
 
     def get_raw_color(self) -> Tuple[int, int, int]:
-        return self.color_sensor.getRawColor()
+        return self.color_sensor.get_raw_color()
 
 
 class TouchSensorImpl(TouchSensor):
     def __init__(self, port: int) -> None:
-        self.touch_sensor = ev3.TouchSensor(port)
-
-    def ev3device(self) -> Any:
-        return self.touch_sensor
+        self.touch_sensor = connector.TouchSensor()
 
     def is_pressed(self) -> bool:
-        return self.touch_sensor.isPressed()
+        return self.touch_sensor.is_pressed()

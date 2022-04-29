@@ -1,11 +1,3 @@
-import pathlib
-import sys
-
-ETROBOSIM_PATH = str(
-    (pathlib.Path(__file__).parent / 'ETRoboSimController').absolute())
-if ETROBOSIM_PATH not in sys.path:
-    sys.path.insert(0, ETROBOSIM_PATH)
-
 import etrobo_python
 from etrobo_python import ColorSensor, Motor, TouchSensor
 
@@ -18,19 +10,6 @@ class LineTracer(object):
     def __init__(self) -> None:
         self.running = False
 
-    def trace_line(
-        self,
-        right_motor: Motor,
-        left_motor: Motor,
-        color_sensor: ColorSensor,
-    ) -> None:
-        brightness = color_sensor.get_brightness() - TARGET
-        right_pwm = round(POWER + PID_P * brightness)
-        left_pwm = round(POWER - PID_P * brightness)
-
-        right_motor.set_pwm(right_pwm)
-        left_motor.set_pwm(left_pwm)
-
     def __call__(
         self,
         right_motor: Motor,
@@ -41,11 +20,15 @@ class LineTracer(object):
         if touch_sensor.is_pressed():
             self.running = True
 
-        if self.running:
-            self.trace_line(
-                right_motor=right_motor,
-                left_motor=left_motor,
-                color_sensor=color_sensor)
+        if not self.running:
+            return
+
+        brightness = color_sensor.get_brightness() - TARGET
+        right_pwm = round(POWER + PID_P * brightness)
+        left_pwm = round(POWER - PID_P * brightness)
+
+        right_motor.set_pwm(right_pwm)
+        left_motor.set_pwm(left_pwm)
 
 
 def main():
@@ -55,7 +38,7 @@ def main():
      .add_device('touch_sensor', device_type='touch_sensor', port='1')
      .add_device('color_sensor', device_type='color_sensor', port='2')
      .add_handler(LineTracer())
-     .dispatch(course='left', debug=True))
+     .dispatch(course='left'))
 
 
 if __name__ == '__main__':
