@@ -29,7 +29,6 @@ class LineTracer(object):
 
         right_motor.set_pwm(right_pwm)
         left_motor.set_pwm(left_pwm)
-        print(left_motor.get_count(), right_motor.get_count())
 
 
 def main():
