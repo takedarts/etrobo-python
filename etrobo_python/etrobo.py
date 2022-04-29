@@ -62,7 +62,7 @@ class ETRobo(object):
 
     def add_handler(self, handler: Callable[..., None]) -> 'ETRobo':
         '''制御ハンドラを登録する。
-        ここで登録された制御ハンドラは、制御プログラム開始後に指定された間隔で実行される。
+        ここで登録された制御ハンドラは、制御プログラムの実行開始後に指定された間隔で実行される。
 
         Args:
           handler: 制御ハンドラ
@@ -73,9 +73,16 @@ class ETRobo(object):
         self.handlers.append(handler)
         return self
 
-    def dispatch(self, **kwargs) -> None:
+    def dispatch(self, interval=0.01, **kwargs) -> None:
+        '''制御プログラムを実行する。
+
+        Args:
+          interval: 制御ハンドラの実行間隔
+          kwargs: バックエンドプログラムに渡される引数
+        '''
         self.backend.create_dispatcher(
             devices=self.devices,
             handlers=self.handlers,
+            interval=interval,
             **kwargs,
         ).dispatch()

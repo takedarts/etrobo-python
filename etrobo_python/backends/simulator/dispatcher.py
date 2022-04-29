@@ -9,6 +9,7 @@ def create_dispatcher(
     interval: float = 0.01,
     course: str = 'left',
     debug: bool = False,
+    **kwargs,
 ) -> Any:
     return Dispatcher(
         devices=devices,

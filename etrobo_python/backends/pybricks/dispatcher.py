@@ -15,12 +15,13 @@ ev3 = EV3Brick()
 def create_dispatcher(
     devices: List[Tuple[str, Any]],
     handlers: List[Callable[..., None]],
+    interval: float = 0.01,
     **kwargs,
 ) -> Any:
     return Dispatcher(
         devices=devices,
         handlers=handlers,
-        **kwargs)
+        interval=interval)
 
 
 class Dispatcher(object):
