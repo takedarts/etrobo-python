@@ -1,6 +1,5 @@
 import setuptools
 
-
 setuptools.setup(
     name='etrobo_python',
     version='0.0.1',
@@ -13,6 +12,6 @@ setuptools.setup(
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
     ],
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(exclude=['samples']),
     python_requires=">=3.7",
 )
