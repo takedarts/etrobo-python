@@ -23,7 +23,7 @@ def print_obtained_values(
 
 
 def run(backend: str) -> None:
-    (ETRobo(backend='simulator')
+    (ETRobo(backend=backend)
      .add_device('right_motor', device_type='motor', port='B')
      .add_device('left_motor', device_type='motor', port='C')
      .add_device('touch_sensor', device_type='touch_sensor', port='1')
