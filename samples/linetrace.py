@@ -1,5 +1,4 @@
-import etrobo_python
-from etrobo_python import ColorSensor, Motor, TouchSensor
+from etrobo_python import ColorSensor, Motor, TouchSensor, ETRobo
 
 TARGET = 20
 POWER = 70
@@ -31,15 +30,11 @@ class LineTracer(object):
         left_motor.set_pwm(left_pwm)
 
 
-def main():
-    (etrobo_python.ETRobo(backend='simulator')
+def run(backend: str) -> None:
+    (ETRobo(backend=backend)
      .add_device('right_motor', device_type='motor', port='B')
      .add_device('left_motor', device_type='motor', port='C')
      .add_device('touch_sensor', device_type='touch_sensor', port='1')
      .add_device('color_sensor', device_type='color_sensor', port='2')
      .add_handler(LineTracer())
-     .dispatch(course='left'))
-
-
-if __name__ == '__main__':
-    main()
+     .dispatch())
