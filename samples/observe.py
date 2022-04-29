@@ -22,7 +22,7 @@ def print_obtained_values(
     print('\n'.join(lines))
 
 
-def run(backend: str):
+def run(backend: str) -> None:
     (ETRobo(backend='simulator')
      .add_device('right_motor', device_type='motor', port='B')
      .add_device('left_motor', device_type='motor', port='C')
