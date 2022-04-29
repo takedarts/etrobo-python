@@ -5,6 +5,9 @@ except BaseException:
 
 
 class Motor(object):
+    def get_count(self) -> int:
+        raise NotImplementedError()
+
     def set_pwm(self, pwm: int) -> None:
         raise NotImplementedError()
 

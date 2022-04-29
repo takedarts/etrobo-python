@@ -19,10 +19,11 @@ def create_device(device_type: str, port: str) -> Any:
 
 
 def get_ev3port(port: str) -> int:
-    if port in ('A', 'B', 'C', 'D'):
-        return ('A', 'B', 'C', 'D').index(port)
-    if port in ('1', '2', '3', '4'):
-        return -1
+    port_names = ('A', 'B', 'C', 'D', '1', '2', '3', '4')
+    port_values = (0, 1, 2, 3, -1, -1, -1, -1)
+
+    if port in port_names:
+        return port_values[port_names.index(port)]
     else:
         raise Exception(f'Unknown port: {port}')
 
@@ -30,6 +31,9 @@ def get_ev3port(port: str) -> int:
 class MotorImpl(Motor):
     def __init__(self, port: int) -> None:
         self.motor = connector.Motor(port)
+
+    def get_count(self) -> int:
+        return self.motor.get_count()
 
     def set_pwm(self, pwm: int) -> None:
         self.motor.set_pwm(pwm)
