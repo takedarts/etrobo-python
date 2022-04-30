@@ -28,9 +28,10 @@ def _reserve_values(fmt: str, offset: int, *args) -> None:
 
 
 def connect_simulator(
+    hook: Callable[[], None],
+    address: str = '127.0.0.1',
     course: str = 'left',
     interval: float = 0.01,
-    hook: Optional[Callable[[], None]] = None,
     timeout: float = 5.0,
 ) -> None:
     global _CONNECTOR
@@ -39,7 +40,11 @@ def connect_simulator(
         raise Exception('Simulator is already connected.')
 
     _CONNECTOR = _Connector(
-        course=course, interval=interval, hook=hook, timeout=timeout)
+        hook=hook,
+        address=address,
+        course=course,
+        interval=interval,
+        timeout=timeout)
     _CONNECTOR.run()
     _CONNECTOR = None
 
@@ -47,17 +52,18 @@ def connect_simulator(
 class _Connector(object):
     def __init__(
         self,
+        hook: Callable[[], None],
+        address: str = '127.0.0.1',
         course: str = 'left',
         interval: float = 0.01,
-        hook: Optional[Callable[[], None]] = None,
         timeout: float = 5.0,
     ) -> None:
         if course.lower() == 'right':
-            self.send_address = ('127.0.0.1', 54003)
-            self.recv_address = ('127.0.0.1', 54004)
+            self.send_address = (address, 54003)
+            self.recv_address = ('0.0.0.0', 54004)
         else:
-            self.send_address = ('127.0.0.1', 54001)
-            self.recv_address = ('127.0.0.1', 54002)
+            self.send_address = (address, 54001)
+            self.recv_address = ('0.0.0.0', 54002)
 
         self.interval = round(interval * 1_000_000)
 
@@ -105,9 +111,7 @@ class _Connector(object):
                     pack_into(fmt, self.send_data, offset, *args)
 
                 self.reserve_data.clear()
-
-                if self.hook is not None:
-                    self.hook()
+                self.hook()
 
                 # データをUnityに送信する
                 pack_into('<QQ', self.send_data, 8, self.send_time, self.recv_time)

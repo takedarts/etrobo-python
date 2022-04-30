@@ -37,12 +37,15 @@ class Dispatcher(object):
 
     def dispatch(self) -> None:
         variables = {name: device for name, device in self.devices}
+        address = '127.0.0.1'
 
         def hook():
             for handler in self.handlers:
                 handler(**variables)
 
         connect_simulator(
+            hook=hook,
+            address=address,
             course=self.course,
             interval=self.interval,
-            hook=hook)
+        )
