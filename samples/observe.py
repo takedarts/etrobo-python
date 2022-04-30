@@ -1,7 +1,7 @@
 from etrobo_python import ColorSensor, ETRobo, Motor, SonarSensor, TouchSensor
 
 
-def print_obtained_values(
+def print_obtained_values_in_simulation(
     right_motor: Motor,
     left_motor: Motor,
     touch_sensor: TouchSensor,
@@ -9,20 +9,43 @@ def print_obtained_values(
     sonar_sensor: SonarSensor,
 ) -> None:
     lines = [
-        f'RightMotor: count={right_motor.get_count()}',
-        f'LeftMotor: count={left_motor.get_count()}',
-        f'TouchSensor: pressed={touch_sensor.is_pressed()}',
-        # f'ColorSensor: brightness={color_sensor.get_brightness()}',
-        # f'ColorSensor: ambient={color_sensor.get_ambient()}',
-        f'ColorSensor: raw_color={color_sensor.get_raw_color()}',
-        f'SonarSensor: listen={sonar_sensor.listen()}',
-        f'SonarSensor: distance={sonar_sensor.get_distance()}',
+        'RightMotor: count={}'.format(right_motor.get_count()),
+        'LeftMotor: count={}'.format(left_motor.get_count()),
+        'TouchSensor: pressed={}'.format(touch_sensor.is_pressed()),
+        'ColorSensor: brightness={}'.format(color_sensor.get_brightness()),
+        'ColorSensor: ambient={}'.format(color_sensor.get_ambient()),
+        'ColorSensor: raw_color={}'.format(color_sensor.get_raw_color()),
+        'SonarSensor: listen={}'.format(sonar_sensor.listen()),
+        'SonarSensor: distance={}'.format(sonar_sensor.get_distance()),
+    ]
+
+    print('\n'.join(lines))
+
+
+def print_obtained_values_in_realworld(
+    right_motor: Motor,
+    left_motor: Motor,
+    touch_sensor: TouchSensor,
+    color_sensor: ColorSensor,
+    sonar_sensor: SonarSensor,
+) -> None:
+    lines = [
+        'RightMotor: count={}'.format(right_motor.get_count()),
+        'LeftMotor: count={}'.format(left_motor.get_count()),
+        'TouchSensor: pressed={}'.format(touch_sensor.is_pressed()),
+        'ColorSensor: raw_color={}'.format(color_sensor.get_raw_color()),
+        'SonarSensor: distance={}'.format(sonar_sensor.get_distance()),
     ]
 
     print('\n'.join(lines))
 
 
 def run(backend: str) -> None:
+    if backend == 'simulator':
+        print_obtained_values = print_obtained_values_in_simulation
+    else:
+        print_obtained_values = print_obtained_values_in_realworld
+
     (ETRobo(backend=backend)
      .add_device('right_motor', device_type='motor', port='B')
      .add_device('left_motor', device_type='motor', port='C')
