@@ -82,3 +82,26 @@ class SonarSensor(object):
             超音波信号によって測定された物体までの距離（単位はmm）。
         '''
         raise NotImplementedError()
+
+
+class GyroSensor(object):
+    def reset(self) -> None:
+        '''ジャイロセンサの角速度を0度にセットする。
+        '''
+        raise NotImplementedError()
+
+    def get_angle(self) -> int:
+        '''ジャイロセンサで測定された現在の角度を返す。
+
+        Returns:
+            測定された現在の角度（単位はdeg）。
+        '''
+        raise NotImplementedError()
+
+    def get_angler_velocity(self) -> int:
+        '''ジャイロセンサで測定された角速度を返す。
+
+        Returns:
+            測定された角速度（単位はdeg）。
+        '''
+        raise NotImplementedError()

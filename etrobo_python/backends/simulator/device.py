@@ -15,6 +15,8 @@ def create_device(device_type: str, port: str) -> Any:
         return TouchSensor(ev3port)
     elif device_type == 'sonar_sensor':
         return SonarSensor(ev3port)
+    elif device_type == 'gyro_sensor':
+        return GyroSensor(ev3port)
     else:
         raise NotImplementedError(f'Unsupported device: {device_type}')
 
@@ -74,3 +76,17 @@ class SonarSensor(etrobo_python.SonarSensor):
 
     def get_distance(self) -> int:
         return self.sonar_sensor.get_distance()
+
+
+class GyroSensor(object):
+    def __init__(self, port: int) -> None:
+        self.gyro_sensor = connector.GyroSensor()
+
+    def reset(self) -> None:
+        self.gyro_sensor.reset()
+
+    def get_angle(self) -> int:
+        return self.gyro_sensor.get_angle()
+
+    def get_angler_velocity(self) -> int:
+        return self.gyro_sensor.get_angler_velocity()

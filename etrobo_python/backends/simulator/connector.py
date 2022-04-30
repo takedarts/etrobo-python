@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 import socket
 from struct import pack_into, unpack_from
 
@@ -15,12 +15,16 @@ def get_connector() -> '_Connector':
     return _CONNECTOR
 
 
-def _read_values(fmt, offset) -> Tuple[Any, ...]:
+def _read_values(fmt: str, offset: int) -> Tuple[Any, ...]:
     return unpack_from(fmt, get_connector().recv_data, offset)
 
 
-def _write_values(fmt, offset, *args) -> None:
-    return pack_into(fmt, get_connector().send_data, offset, *args)
+def _write_values(fmt: str, offset: int, *args) -> None:
+    pack_into(fmt, get_connector().send_data, offset, *args)
+
+
+def _reserve_values(fmt: str, offset: int, *args) -> None:
+    get_connector().reserve_data.append((fmt, offset, args))
 
 
 def connect_simulator(
@@ -65,6 +69,7 @@ class _Connector(object):
 
         self.hook = hook
         self.timeout = timeout
+        self.reserve_data: List[Tuple[str, int, Tuple[Any, ...]]] = []
 
     def run(self) -> None:
         sock = socket.socket(socket.AF_INET, type=socket.SOCK_DGRAM)
@@ -96,6 +101,11 @@ class _Connector(object):
                 self.send_time = send_time
 
                 # 状態を更新
+                for fmt, offset, args in self.reserve_data:
+                    pack_into(fmt, self.send_data, offset, *args)
+
+                self.reserve_data.clear()
+
                 if self.hook is not None:
                     self.hook()
 
@@ -151,3 +161,15 @@ class SonarSensor(object):
 
     def get_distance(self) -> int:
         return _read_values('<i', 120)[0]
+
+
+class GyroSensor(object):
+    def reset(self) -> None:
+        _write_values('<i', 84, 1)
+        _reserve_values('<i', 84, 0)
+
+    def get_angle(self) -> int:
+        return _read_values('<i', 60)[0]
+
+    def get_angler_velocity(self) -> int:
+        return _read_values('<i', 64)[0]
