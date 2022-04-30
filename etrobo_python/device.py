@@ -9,7 +9,7 @@ class Motor(object):
         '''モーターの回転角度を返す。
 
         Returns:
-          モーターの回転角度（単位はdeg）。
+            モーターの回転角度（単位はdeg）。
         '''
         raise NotImplementedError()
 
@@ -17,7 +17,7 @@ class Motor(object):
         '''モーターのPWMの値を設定する。
 
         Args:
-          pwm: PWMの設定値。
+            pwm: PWMの設定値。
         '''
         raise NotImplementedError()
 
@@ -25,7 +25,7 @@ class Motor(object):
         '''ブレーキモードを設定する。
 
         Args:
-          brake: Trueを指定した場合はブレーキモードとなる。
+            brake: Trueを指定した場合はブレーキモードとなる。
         '''
         raise NotImplementedError()
 
@@ -35,7 +35,7 @@ class ColorSensor(object):
         '''反射光の測定値を返す。
 
         Returns:
-          反射光の測定値。
+            反射光の測定値。
         '''
         raise NotImplementedError()
 
@@ -43,7 +43,7 @@ class ColorSensor(object):
         '''環境光の測定値を返す。
 
         Returns:
-          環境光の測定値
+            環境光の測定値
         '''
         raise NotImplementedError()
 
@@ -51,7 +51,7 @@ class ColorSensor(object):
         '''RGBの測定値を返す。
 
         Returns:
-          測定された(Red, Green, Blue)の値。
+            測定された(Red, Green, Blue)の値。
         '''
         raise NotImplementedError()
 
@@ -61,7 +61,7 @@ class TouchSensor(object):
         '''タッチセンサの測定値を返す。
 
         Returns:
-          タッチセンサが押されていればTrue。
+            タッチセンサが押されていればTrue。
         '''
         raise NotImplementedError()
 
@@ -71,15 +71,14 @@ class SonarSensor(object):
         '''超音波信号の受信状況を返す。
 
         Returns:
-          超音波信号を受信できていればTrue。
+            超音波信号を受信できていればTrue。
         '''
         raise NotImplementedError()
 
     def get_distance(self) -> int:
         '''超音波信号によって測定された物体までの距離を返す。
-        超音波信号が受信できていない場合の値は不定。
 
         Returns:
-          超音波信号によって測定された物体までの距離（単位はmm）。
+            超音波信号によって測定された物体までの距離（単位はmm）。
         '''
         raise NotImplementedError()

@@ -10,12 +10,12 @@ class ETRobo(object):
         実行環境に適したバックエンドプログラムを指定すること。
 
         バックエンドプログラム:
-          simulator: Unityのシミュレータ環境でのロボット制御
-          pybricks: micropythonを使ったEV3ロボットの制御
-          raspike: micropythonを使ったRasPikeロボットの制御（未実装）
+            simulator: Unityのシミュレータ環境でのロボット制御
+            pybricks: micropythonを使ったEV3ロボットの制御
+            raspike: micropythonを使ったRasPikeロボットの制御（未実装）
 
         Args:
-          backend: バックエンドプログラムの名前
+            backend: バックエンドプログラムの名前
         '''
         if backend == 'simulator':
             from .backends import simulator
@@ -35,26 +35,26 @@ class ETRobo(object):
         ここで登録されたデバイスオブジェクトは制御ハンドラに引数として渡される。
 
         制御デバイスは以下のものをサポートしている:
-          motor, color_sensor, touch_sensor, sonar_sensor
+            motor, color_sensor, touch_sensor, sonar_sensor
 
         例:
-          motorタイプの制御デバイス motor1 を登録した場合、
-          制御ハンドラにはMotorオブジェクトが引数 motor1 として渡される。
+            motorタイプの制御デバイス motor1 を登録した場合、
+            制御ハンドラにはMotorオブジェクトが引数 motor1 として渡される。
 
-          def motor_handler(motor1: etrobo_python.Motor) -> None:
-              ...
+            def motor_handler(motor1: etrobo_python.Motor) -> None:
+                ...
 
-          etrobo = ETRobo(backend)
-          etrobo.add_device('motor1', device_type='motor', port='A')
-          etrobo.add_handler(motor_handler)
+            etrobo = ETRobo(backend)
+            etrobo.add_device('motor1', device_type='motor', port='A')
+            etrobo.add_handler(motor_handler)
 
         Args:
-          name: 制御デバイスの名前（handlerに渡される引数名）。
-          device_type: 制御デバイスの種類
-          port: 制御デバイスを接続しているポート
+            name: 制御デバイスの名前（handlerに渡される引数名）。
+            device_type: 制御デバイスの種類
+            port: 制御デバイスを接続しているポート
 
         Returns:
-          このオブジェクト
+            このオブジェクト
         '''
         device = self.backend.create_device(device_type, port)
         self.devices.append((name, device))
@@ -65,10 +65,10 @@ class ETRobo(object):
         ここで登録された制御ハンドラは、制御プログラムの実行開始後に指定された間隔で実行される。
 
         Args:
-          handler: 制御ハンドラ
+            handler: 制御ハンドラ
 
         Returns:
-          このオブジェクト
+            このオブジェクト
         '''
         self.handlers.append(handler)
         return self
@@ -77,8 +77,8 @@ class ETRobo(object):
         '''制御プログラムを実行する。
 
         Args:
-          interval: 制御ハンドラの実行間隔
-          kwargs: バックエンドプログラムに渡される引数
+            interval: 制御ハンドラの実行間隔
+            kwargs: バックエンドプログラムに渡される引数
         '''
         self.backend.create_dispatcher(
             devices=self.devices,
