@@ -125,6 +125,14 @@ class _Connector(object):
             sock.close()
 
 
+class Hub(object):
+    def set_led(self, color: int) -> None:
+        _write_values('<I', 32, color)
+
+    def get_time(self) -> float:
+        return get_connector().recv_time / 1_000_000
+
+
 class Motor(object):
     def __init__(self, port: int) -> None:
         self.port = port

@@ -4,6 +4,63 @@ except BaseException:
     pass
 
 
+class Hub(object):
+    def set_led(self, color: str) -> None:
+        '''LEDの発光色を設定する。
+        発光色の名前は black, red, green, orange のいずれか。
+
+        Args:
+            color: LEDの発光色の名前
+        '''
+        raise NotImplementedError()
+
+    def get_time(self) -> float:
+        '''現在時刻を返す。
+        シミュレータ環境の場合は、シミュレータ上での時刻を返す。
+
+        Returns:
+            現在時刻（単位は秒）
+        '''
+        raise NotImplementedError()
+
+    def get_battery_voltage(self) -> int:
+        '''バッテリーの出力電圧を返す。
+        シミュレータ環境の場合は常に8000mVを返す。
+
+        Return:
+            バッテリーの出力電圧（単位はmV）
+        '''
+        raise NotImplementedError()
+
+    def get_battery_current(self) -> int:
+        '''バッテリーの出力電流を返す。
+        シミュレータ環境の場合は常に200mAを返す。
+
+        Return:
+            バッテリーの出力電流（単位はmA）
+        '''
+        raise NotImplementedError()
+
+    def play_speaker_tone(self, frequency: int, duration: float) -> None:
+        '''スピーカーからビープ音を鳴らす。
+        シミュレータ環境の場合は何もしない。
+
+        Args:
+            frequency: ビープ音の周波数
+            duration: 音を鳴らす時間（単位は秒）
+        '''
+        raise NotImplementedError()
+
+    def set_speaker_volume(self, volume: int) -> None:
+        '''スピーカーの音量を設定する。
+        シミュレータ環境の場合は何もしない。
+
+        Args:
+            volume: スピーカーの音量（単位は%）
+        '''
+        raise NotImplementedError()
+
+
 class Motor(object):
     def get_count(self) -> int:
         '''モーターの回転角度を返す。

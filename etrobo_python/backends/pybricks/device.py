@@ -1,7 +1,10 @@
+import time
+
 import etrobo_python
 
 import pybricks.ev3devices as ev3dev
-from pybricks.parameters import Port
+import pybricks.hubs as hubs
+from pybricks.parameters import Port, Color
 
 try:
     from typing import Any, Tuple
@@ -10,6 +13,9 @@ except BaseException:
 
 
 def create_device(device_type: str, port: str) -> Any:
+    if device_type == 'hub':
+        return Hub()
+
     ev3port = get_ev3port(port)
 
     if device_type == 'motor':
@@ -36,6 +42,37 @@ def get_ev3port(port: str) -> Port:
         return port_values[port_names.index(port)]
     else:
         raise Exception('Unknown port: {}'.format(port))
+
+
+class Hub(object):
+    def __init__(self) -> None:
+        self.ev3brick = hubs.EV3Brick()
+
+    def set_led(self, color: str) -> None:
+        color_value = color.lower()[0]
+        if color_value == 'r':
+            self.ev3brick.light.on(Color.RED)
+        elif color_value == 'g':
+            self.ev3brick.light.on(Color.GREEN)
+        elif color_value == 'o':
+            self.ev3brick.light.on(Color.ORANGE)
+        else:
+            self.ev3brick.light.on(Color.BLACK)
+
+    def get_time(self) -> float:
+        return time.time()
+
+    def get_battery_voltage(self) -> int:
+        return self.ev3brick.battery.voltage()
+
+    def get_battery_current(self) -> int:
+        return self.ev3brick.battery.current()
+
+    def play_speaker_tone(self, frequency: int, duration: float) -> None:
+        self.ev3brick.speaker.beep(frequency, round(duration * 1000))
+
+    def set_speaker_volume(self, volume: int) -> None:
+        self.ev3brick.speaker.set_volume(volume)
 
 
 class Motor(etrobo_python.Motor):

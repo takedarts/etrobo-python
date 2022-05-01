@@ -14,6 +14,21 @@ class ETRobo(object):
             pybricks: micropythonを使ったEV3ロボットの制御
             raspike: micropythonを使ったRasPikeロボットの制御（未実装）
 
+        例:
+            制御対象としてHUBタイプのデバイス「body」とmotorタイプのデバイス「motor1」を登録した場合、
+            制御ハンドラには Hubオブジェクトが引数「body」として、Motorオブジェクトが引数「motor1」として渡される。
+
+            def motor_handler(
+                body: etrobo_python.Hub,
+                motor1: etrobo_python.Motor,
+            ) -> None:
+                ...
+
+            etrobo = ETRobo(backend)
+            etrobo.add_hub('body')
+            etrobo.add_device('motor1', device_type='motor', port='A')
+            etrobo.add_handler(motor_handler)
+
         Args:
             backend: バックエンドプログラムの名前
         '''
@@ -30,6 +45,20 @@ class ETRobo(object):
         self.devices = []  # type: List[Tuple[str, Any]]
         self.handlers = []  # type: List[Callable[..., None]]
 
+    def add_hub(self, name: str) -> 'ETRobo':
+        '''制御対象としてHubを登録する。
+        このメソッドが実行された場合、Hubオブジェクトが制御ハンドラに引数として渡される。
+
+        Args:
+            name: 制御オブジェクトの名前（handlerに渡される引数名）。
+
+        Returns:
+            このオブジェクト
+        '''
+        device = self.backend.create_device('hub', '')
+        self.devices.append((name, device))
+        return self
+
     def add_device(self, name: str, device_type: str, port: str) -> 'ETRobo':
         '''制御対象となるデバイスを登録する。
         ここで登録されたデバイスオブジェクトは制御ハンドラに引数として渡される。
@@ -37,19 +66,8 @@ class ETRobo(object):
         制御デバイスは以下のものをサポートしている:
             motor, color_sensor, touch_sensor, sonar_sensor
 
-        例:
-            motorタイプの制御デバイス motor1 を登録した場合、
-            制御ハンドラにはMotorオブジェクトが引数 motor1 として渡される。
-
-            def motor_handler(motor1: etrobo_python.Motor) -> None:
-                ...
-
-            etrobo = ETRobo(backend)
-            etrobo.add_device('motor1', device_type='motor', port='A')
-            etrobo.add_handler(motor_handler)
-
         Args:
-            name: 制御デバイスの名前（handlerに渡される引数名）。
+            name: 制御オブジェクトの名前（handlerに渡される引数名）。
             device_type: 制御デバイスの種類
             port: 制御デバイスを接続しているポート
 

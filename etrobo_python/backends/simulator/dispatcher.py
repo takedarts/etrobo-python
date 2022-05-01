@@ -51,7 +51,8 @@ class Dispatcher(object):
             interval=self.interval,
         )
 
-def _get_remote_address() -> None:
+
+def _get_remote_address() -> str:
     '''シミュレータへの通信するためのIPアドレスを返す。
 
     Returns:
@@ -73,6 +74,6 @@ def _get_remote_address() -> None:
 
         if tokens[0] == 'default' and tokens[1] == 'via':
             return tokens[2]
-    
+
     # デフォルトルートが見つからない場合はループバックアドレスを返す
     return '127.0.0.1'

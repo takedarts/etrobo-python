@@ -1,5 +1,4 @@
 import time
-import traceback
 
 from pybricks.hubs import EV3Brick
 
@@ -37,18 +36,17 @@ class Dispatcher(object):
 
     def dispatch(self) -> None:
         variables = {name: device for name, device in self.devices}
-        previous_time = 0.0
+        previous_time = 0
 
         while True:
-            current_time = time.time()
-            if current_time - previous_time < self.interval:
+            current_time = round(time.time() * 1000)
+            process_time = current_time // round(self.interval * 1000)
+
+            if process_time == previous_time:
                 time.sleep(self.interval * 0.1)
                 continue
 
-            previous_time = current_time
+            previous_time = process_time
 
-            try:
-                for handler in self.handlers:
-                    handler(**variables)
-            except BaseException:
-                traceback.print_exc()
+            for handler in self.handlers:
+                handler(**variables)

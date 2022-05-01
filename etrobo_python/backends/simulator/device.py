@@ -5,18 +5,18 @@ from . import connector
 
 
 def create_device(device_type: str, port: str) -> Any:
-    ev3port = get_ev3port(port)
-
-    if device_type == 'motor':
-        return Motor(ev3port)
+    if device_type == 'hub':
+        return Hub()
+    elif device_type == 'motor':
+        return Motor(get_ev3port(port))
     elif device_type == 'color_sensor':
-        return ColorSensor(ev3port)
+        return ColorSensor()
     elif device_type == 'touch_sensor':
-        return TouchSensor(ev3port)
+        return TouchSensor()
     elif device_type == 'sonar_sensor':
-        return SonarSensor(ev3port)
+        return SonarSensor()
     elif device_type == 'gyro_sensor':
-        return GyroSensor(ev3port)
+        return GyroSensor()
     else:
         raise NotImplementedError(f'Unsupported device: {device_type}')
 
@@ -29,6 +29,35 @@ def get_ev3port(port: str) -> int:
         return port_values[port_names.index(port)]
     else:
         raise Exception(f'Unknown port: {port}')
+
+
+class Hub(object):
+    def __init__(self):
+        self.hub = connector.Hub()
+
+    def set_led(self, color: str) -> None:
+        color_value = color.lower()[0]
+        color_names = ('b', 'r', 'g', 'o')
+
+        if color_value in color_names:
+            self.hub.set_led(color_names.index(color_value))
+        else:
+            self.hub.set_led(0)
+
+    def get_time(self) -> float:
+        return self.hub.get_time()
+
+    def get_battery_voltage(self) -> int:
+        return 8000
+
+    def get_battery_current(self) -> int:
+        return 200
+
+    def play_speaker_tone(self, frequency: int, duration: float) -> None:
+        pass
+
+    def set_speaker_volume(self, volume: int) -> None:
+        pass
 
 
 class Motor(etrobo_python.Motor):
@@ -46,7 +75,7 @@ class Motor(etrobo_python.Motor):
 
 
 class ColorSensor(etrobo_python.ColorSensor):
-    def __init__(self, port: int) -> None:
+    def __init__(self) -> None:
         self.color_sensor = connector.ColorSensor()
 
     def get_brightness(self) -> int:
@@ -60,7 +89,7 @@ class ColorSensor(etrobo_python.ColorSensor):
 
 
 class TouchSensor(etrobo_python.TouchSensor):
-    def __init__(self, port: int) -> None:
+    def __init__(self) -> None:
         self.touch_sensor = connector.TouchSensor()
 
     def is_pressed(self) -> bool:
@@ -68,7 +97,7 @@ class TouchSensor(etrobo_python.TouchSensor):
 
 
 class SonarSensor(etrobo_python.SonarSensor):
-    def __init__(self, port: int) -> None:
+    def __init__(self) -> None:
         self.sonar_sensor = connector.SonarSensor()
 
     def listen(self) -> bool:
@@ -79,7 +108,7 @@ class SonarSensor(etrobo_python.SonarSensor):
 
 
 class GyroSensor(object):
-    def __init__(self, port: int) -> None:
+    def __init__(self) -> None:
         self.gyro_sensor = connector.GyroSensor()
 
     def reset(self) -> None:
