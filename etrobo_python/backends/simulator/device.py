@@ -67,8 +67,8 @@ class Motor(etrobo_python.Motor):
     def get_count(self) -> int:
         return self.motor.get_count()
 
-    def set_pwm(self, pwm: int) -> None:
-        self.motor.set_pwm(pwm)
+    def set_power(self, power: int) -> None:
+        self.motor.set_pwm(power)
 
     def set_brake(self, brake: bool) -> None:
         self.motor.set_brake(brake)

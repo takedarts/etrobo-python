@@ -10,7 +10,7 @@ class Hub(object):
         発光色の名前は black, red, green, orange のいずれか。
 
         Args:
-            color: LEDの発光色の名前
+            color: LEDの発光色の名前。
         '''
         raise NotImplementedError()
 
@@ -19,7 +19,7 @@ class Hub(object):
         シミュレータ環境の場合は、シミュレータ上での時刻を返す。
 
         Returns:
-            現在時刻（単位は秒）
+            現在時刻（単位は秒）。
         '''
         raise NotImplementedError()
 
@@ -28,7 +28,7 @@ class Hub(object):
         シミュレータ環境の場合は常に8000mVを返す。
 
         Return:
-            バッテリーの出力電圧（単位はmV）
+            バッテリーの出力電圧（単位はmV）。
         '''
         raise NotImplementedError()
 
@@ -37,7 +37,7 @@ class Hub(object):
         シミュレータ環境の場合は常に200mAを返す。
 
         Return:
-            バッテリーの出力電流（単位はmA）
+            バッテリーの出力電流（単位はmA）。
         '''
         raise NotImplementedError()
 
@@ -46,8 +46,8 @@ class Hub(object):
         シミュレータ環境の場合は何もしない。
 
         Args:
-            frequency: ビープ音の周波数
-            duration: 音を鳴らす時間（単位は秒）
+            frequency: ビープ音の周波数。
+            duration: 音を鳴らす時間（単位は秒）。
         '''
         raise NotImplementedError()
 
@@ -56,7 +56,7 @@ class Hub(object):
         シミュレータ環境の場合は何もしない。
 
         Args:
-            volume: スピーカーの音量（単位は%）
+            volume: スピーカーの音量（単位は%）。
         '''
         raise NotImplementedError()
 
@@ -70,11 +70,11 @@ class Motor(object):
         '''
         raise NotImplementedError()
 
-    def set_pwm(self, pwm: int) -> None:
-        '''モーターのPWMの値を設定する。
+    def set_power(self, power: int) -> None:
+        '''モーターの回転力を設定する。
 
         Args:
-            pwm: PWMの設定値。
+            power: モーターの回転力。
         '''
         raise NotImplementedError()
 
@@ -100,7 +100,7 @@ class ColorSensor(object):
         '''環境光の測定値を返す。
 
         Returns:
-            環境光の測定値
+            環境光の測定値。
         '''
         raise NotImplementedError()
 

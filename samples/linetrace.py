@@ -23,11 +23,11 @@ class LineTracer(object):
             return
 
         brightness = color_sensor.get_brightness() - TARGET
-        right_pwm = round(POWER + PID_P * brightness)
-        left_pwm = round(POWER - PID_P * brightness)
+        right_power = round(POWER + PID_P * brightness)
+        left_power = round(POWER - PID_P * brightness)
 
-        right_motor.set_pwm(right_pwm)
-        left_motor.set_pwm(left_pwm)
+        right_motor.set_power(right_power)
+        left_motor.set_power(left_power)
 
 
 def run(backend: str) -> None:
