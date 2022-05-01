@@ -70,6 +70,11 @@ class Motor(object):
         '''
         raise NotImplementedError()
 
+    def reset_count(self) -> None:
+        '''モータの回転角度の値を0に設定する。
+        '''
+        raise NotImplementedError()
+
     def set_power(self, power: int) -> None:
         '''モーターの回転力を設定する。
 

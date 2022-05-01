@@ -9,7 +9,6 @@ MEASURE_TIME = 10.0
 class SpeedChecker(object):
     def __init__(self) -> None:
         self.power = 0
-        self.start_count = 0
         self.start_time = 0.0
         self.finished = False
 
@@ -22,11 +21,9 @@ class SpeedChecker(object):
         if self.power != 0 and current_time - self.start_time < MEASURE_TIME:
             return
 
-        current_count = motor.get_count()
-
         if self.power != 0:
             print('power={}: speed={:.4f} [deg/sec]'.format(
-                self.power, (current_count - self.start_count) / MEASURE_TIME))
+                self.power, motor.get_count() / MEASURE_TIME))
 
         if self.power >= 100:
             motor.set_power(0)
@@ -35,7 +32,7 @@ class SpeedChecker(object):
 
         self.power += 10
         self.start_time = current_time
-        self.start_count = current_count
+        motor.reset_count()
         motor.set_power(self.power)
 
 

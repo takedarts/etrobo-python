@@ -140,6 +140,10 @@ class Motor(object):
     def get_count(self) -> int:
         return _read_values('<i', 288 + self.port * 4)[0]
 
+    def reset_count(self) -> None:
+        _write_values('<i', 68 + self.port * 4, 1)
+        _reserve_values('<i', 68 + self.port * 4, 0)
+
     def set_pwm(self, pwm: int) -> None:
         pwm = min(max(pwm, -100), 100)
         _write_values('<I', 36 + self.port * 4, pwm)
