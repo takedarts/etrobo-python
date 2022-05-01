@@ -84,7 +84,7 @@ class _Connector(object):
 
         try:
             # Unityに接続
-            print('Connecting to the Unity Simulator.')
+            print(f'Connecting to the Unity Simulator {self.send_address}.')
             pack_into('<4sI', self.send_data, 0, b'ETTX', 1)
             pack_into('<II', self.send_data, 24, 512, 512)
             sock.sendto(self.send_data, self.send_address)
