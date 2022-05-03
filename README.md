@@ -17,15 +17,11 @@
 現在のバージョンではシミュレータ環境とEV3環境のみをサポートしています。
 SPIKE環境(RasPike環境)については実機を入手できましたら開発をはじめます。
 
-## シミュレータ環境へのインストール
-[ETロボコンのシミュレータ](https://github.com/ETrobocon/etrobo)をインストールし、その環境にpython（version 3.7以上）をインストールします。
-その後、以下のコマンドを実行し、このミドルウェア`etrobo_python`をインストールします。
-```
-pip install git+https://github.com/takedarts/etrobo-python
-```
+## インストール
+Windows/MaxOSX/Linuxなどのpython（バージョン3.7以上）環境には`pip`を用いてインストールできます。
+また、EV3でこのミドルウェアを使用する場合は[etrobo_pythonを含むEV3-MicroPythonのイメージファイル](https://github.com/takedarts/etrobo-python/releases/latest/download/ev3micropythonv200etrobosdcardimage.zip)を使用してください。
 
-## EV3環境へのインストール
-準備中
+詳しいインストール方法については[Wiki](https://github.com/takedarts/etrobo-python/wiki)を参照してください。
 
 ## サンプルプログラム
 ```python
