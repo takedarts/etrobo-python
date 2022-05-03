@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='etrobo_python',
-    version='0.0.1',
+    version='0.1',
     author='Atsushi TAKEDA',
     author_email='takeda@cs.tohoku-gakuin.ac.jp',
     license='MIT',
