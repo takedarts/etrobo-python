@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>etrobo_python.etrobo &mdash; etrobo-python 0.2 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> etrobo-python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../etrobo_python.html">etrobo_python package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">etrobo-python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>etrobo_python.etrobo</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for etrobo_python.etrobo</h1><div class="highlight"><pre>
+<span></span><span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="ETRobo"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.etrobo.ETRobo">[docs]</a><span class="k">class</span> <span class="nc">ETRobo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;ロボットを制御するためのオブジェクトを作成する。</span>
+<span class="sd">        実行環境に適したバックエンドプログラムを指定すること。</span>
+
+<span class="sd">        バックエンドプログラム:</span>
+<span class="sd">            simulator: Unityのシミュレータ環境でのロボット制御</span>
+<span class="sd">            pybricks: micropythonを使ったEV3ロボットの制御</span>
+<span class="sd">            raspike: micropythonを使ったRasPikeロボットの制御（未実装）</span>
+
+<span class="sd">        例:</span>
+<span class="sd">            制御対象としてHUBタイプのデバイス「body」とmotorタイプのデバイス「motor1」を登録した場合、</span>
+<span class="sd">            制御ハンドラには Hubオブジェクトが引数「body」として、Motorオブジェクトが引数「motor1」として渡される。</span>
+
+<span class="sd">            def motor_handler(</span>
+<span class="sd">                body: etrobo_python.Hub,</span>
+<span class="sd">                motor1: etrobo_python.Motor,</span>
+<span class="sd">            ) -&gt; None:</span>
+<span class="sd">                ...</span>
+
+<span class="sd">            etrobo = ETRobo(backend)</span>
+<span class="sd">            etrobo.add_hub(&#39;body&#39;)</span>
+<span class="sd">            etrobo.add_device(&#39;motor1&#39;, device_type=&#39;motor&#39;, port=&#39;A&#39;)</span>
+<span class="sd">            etrobo.add_handler(motor_handler)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            backend: バックエンドプログラムの名前</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;simulator&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.backends</span> <span class="kn">import</span> <span class="n">simulator</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">simulator</span>  <span class="c1"># type: Any</span>
+        <span class="k">elif</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;pybricks&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.backends</span> <span class="kn">import</span> <span class="n">pybricks</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">pybricks</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s1">&#39;Unsupported backend: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backend</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">devices</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[Tuple[str, Any]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[Callable[..., None]]</span>
+
+<div class="viewcode-block" id="ETRobo.add_hub"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.etrobo.ETRobo.add_hub">[docs]</a>    <span class="k">def</span> <span class="nf">add_hub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ETRobo&#39;</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;制御対象としてHubを登録する。</span>
+<span class="sd">        このメソッドが実行された場合、Hubオブジェクトが制御ハンドラに引数として渡される。</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: 制御オブジェクトの名前（handlerに渡される引数名）。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            このオブジェクト</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">create_device</span><span class="p">(</span><span class="s1">&#39;hub&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">device</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ETRobo.add_device"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.etrobo.ETRobo.add_device">[docs]</a>    <span class="k">def</span> <span class="nf">add_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ETRobo&#39;</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;制御対象となるデバイスを登録する。</span>
+<span class="sd">        ここで登録されたデバイスオブジェクトは制御ハンドラに引数として渡される。</span>
+
+<span class="sd">        制御デバイスは以下のものをサポートしている:</span>
+<span class="sd">            motor, color_sensor, touch_sensor, sonar_sensor</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: 制御オブジェクトの名前（handlerに渡される引数名）。</span>
+<span class="sd">            device_type: 制御デバイスの種類</span>
+<span class="sd">            port: 制御デバイスを接続しているポート</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            このオブジェクト</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">create_device</span><span class="p">(</span><span class="n">device_type</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">device</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ETRobo.add_handler"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.etrobo.ETRobo.add_handler">[docs]</a>    <span class="k">def</span> <span class="nf">add_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;ETRobo&#39;</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;制御ハンドラを登録する。</span>
+<span class="sd">        ここで登録された制御ハンドラは、制御プログラムの実行開始後に指定された間隔で実行される。</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            handler: 制御ハンドラ</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            このオブジェクト</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ETRobo.dispatch"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.etrobo.ETRobo.dispatch">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;制御プログラムを実行する。</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            interval: 制御ハンドラの実行間隔</span>
+<span class="sd">            kwargs: バックエンドプログラムに渡される引数</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">create_dispatcher</span><span class="p">(</span>
+            <span class="n">devices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">,</span>
+            <span class="n">handlers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">,</span>
+            <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Atsushi TAKEDA.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

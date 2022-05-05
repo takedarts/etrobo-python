@@ -1,0 +1,29 @@
+etrobo\_python package
+======================
+
+Submodules
+----------
+
+etrobo\_python.device module
+----------------------------
+
+.. automodule:: etrobo_python.device
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+etrobo\_python.etrobo module
+----------------------------
+
+.. automodule:: etrobo_python.etrobo
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: etrobo_python
+   :members:
+   :undoc-members:
+   :show-inheritance:
