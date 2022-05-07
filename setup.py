@@ -1,12 +1,15 @@
+import pathlib
 import setuptools
+import etrobo_python
 
 setuptools.setup(
     name='etrobo_python',
-    version='0.1',
-    author='Atsushi TAKEDA',
+    version=etrobo_python.__version__,
+    author=etrobo_python.__author__,
     author_email='takeda@cs.tohoku-gakuin.ac.jp',
     license='MIT',
-    description='Python middleware for ET-ROBOCON 2022',
+    description=pathlib.Path('README.txt').read_text().split('\n')[0],
+    long_description=pathlib.Path('README.txt').read_text(),
     url='https://github.com/takedarts/etrobo-python',
     classifiers=[
         'Programming Language :: Python :: 3',
