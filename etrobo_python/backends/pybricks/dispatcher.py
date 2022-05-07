@@ -40,11 +40,13 @@ class Dispatcher(object):
 
         try:
             while True:
-                current_time = round(time.time() * 1000)
-                process_time = current_time // round(self.interval * 1000)
+                interval_time = int(self.interval * 1000)
+                current_time = int(time.time() * 1000)
+                process_time = current_time // interval_time
 
                 if process_time == previous_time:
-                    time.sleep(self.interval * 0.1)
+                    next_time = previous_time + interval_time
+                    time.sleep((next_time - current_time) * 0.001)
                     continue
 
                 previous_time = process_time
