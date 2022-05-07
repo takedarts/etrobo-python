@@ -1,5 +1,15 @@
-## pythonを使ってETロボコンに出場するためのミドルウェア
+## ETロボコン2022のためのpythonミドルウェア
 
+### インストール方法
+- [Windows環境でのインストール方法とプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-windows)
+- [MacOSX環境でのインストール方法とプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-macosx)
+- [EV3(実機)でのプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-ev3)
+
+### ミドルウェアの使い方
+- [チュートリアル](https://github.com/takedarts/etrobo-python/wiki/tutorial)
+- [APIドキュメント](https://github.com/takedarts/etrobo-python/wiki/api)
+
+## これは何？
 2022年度のETロボコンはリアル大会とシミュレーション大会の両方が行われることになりました。
 リアル大会ではLEGO Mindstorms EV3かSPIKEの実機を制御するプログラムを開発することになりますが、大会運営よりUnityを使ったシミュレータが公開されていますので、シミュレータを使って制御プログラムの開発とデバッグを行い、実機でパラメータの調整を行う方法を使えば効率よく制御プログラムを開発できそうです。
 シミュレータを使って実機用のプログラムを開発するという方法は大会運営側も想定していまして、公式の開発環境である[EV3RT](https://dev.toppers.jp/trac_user/ev3pf/wiki/WhatsEV3RT)を使った場合はシミュレータと実機の両方で動作する制御プログラムを開発できます。
@@ -16,12 +26,6 @@
 
 現在のバージョンではシミュレータ環境とEV3環境のみをサポートしています。
 SPIKE環境(RasPike環境)については実機を入手できましたら開発をはじめます。
-
-## インストール
-Windows/MaxOSX/Linuxなどのpython（バージョン3.7以上）環境には`pip`を用いてインストールできます。
-また、EV3でこのミドルウェアを使用する場合は[etrobo_pythonを含むEV3-MicroPythonのイメージファイル](https://github.com/takedarts/etrobo-python/releases/latest/download/ev3micropythonv200etrobosdcardimage.zip)を使用してください。
-
-詳しいインストール方法については[Wiki](https://github.com/takedarts/etrobo-python/wiki)を参照してください。
 
 ## サンプルプログラム
 ```python
