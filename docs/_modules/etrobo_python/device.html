@@ -127,7 +127,11 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
 
 
-<div class="viewcode-block" id="Motor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor">[docs]</a><span class="k">class</span> <span class="nc">Motor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Device"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Device">[docs]</a><span class="k">class</span> <span class="nc">Device</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Motor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor">[docs]</a><span class="k">class</span> <span class="nc">Motor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
 <div class="viewcode-block" id="Motor.get_count"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor.get_count">[docs]</a>    <span class="k">def</span> <span class="nf">get_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;モーターの回転角度を返す。</span>
 
@@ -158,7 +162,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
 
 
-<div class="viewcode-block" id="ColorSensor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.ColorSensor">[docs]</a><span class="k">class</span> <span class="nc">ColorSensor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="ColorSensor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.ColorSensor">[docs]</a><span class="k">class</span> <span class="nc">ColorSensor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
 <div class="viewcode-block" id="ColorSensor.get_brightness"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.ColorSensor.get_brightness">[docs]</a>    <span class="k">def</span> <span class="nf">get_brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;反射光の測定値を返す。</span>
 
@@ -184,7 +188,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
 
 
-<div class="viewcode-block" id="TouchSensor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.TouchSensor">[docs]</a><span class="k">class</span> <span class="nc">TouchSensor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TouchSensor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.TouchSensor">[docs]</a><span class="k">class</span> <span class="nc">TouchSensor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
 <div class="viewcode-block" id="TouchSensor.is_pressed"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.TouchSensor.is_pressed">[docs]</a>    <span class="k">def</span> <span class="nf">is_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;タッチセンサの測定値を返す。</span>
 
@@ -194,7 +198,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
 
 
-<div class="viewcode-block" id="SonarSensor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.SonarSensor">[docs]</a><span class="k">class</span> <span class="nc">SonarSensor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="SonarSensor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.SonarSensor">[docs]</a><span class="k">class</span> <span class="nc">SonarSensor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
 <div class="viewcode-block" id="SonarSensor.listen"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.SonarSensor.listen">[docs]</a>    <span class="k">def</span> <span class="nf">listen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;超音波信号の受信状況を返す。</span>
 
@@ -212,7 +216,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
 
 
-<div class="viewcode-block" id="GyroSensor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor">[docs]</a><span class="k">class</span> <span class="nc">GyroSensor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="GyroSensor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor">[docs]</a><span class="k">class</span> <span class="nc">GyroSensor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
 <div class="viewcode-block" id="GyroSensor.reset"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;ジャイロセンサの角速度を0度にセットする。</span>
 <span class="sd">        &#39;&#39;&#39;</span>

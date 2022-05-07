@@ -64,10 +64,22 @@
            <div itemprop="articleBody">
              
   <h1>Source code for etrobo_python.etrobo</h1><div class="highlight"><pre>
-<span></span><span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span></span><span class="kn">from</span> <span class="nn">.device</span> <span class="kn">import</span> <span class="n">Device</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
     <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">_pascal2snake</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;パスカルケースの文字列をスネークケースに変換する。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">c</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span>
+        <span class="s1">&#39;_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="k">else</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:])))</span>
 
 
 <div class="viewcode-block" id="ETRobo"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.etrobo.ETRobo">[docs]</a><span class="k">class</span> <span class="nc">ETRobo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -125,12 +137,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">device</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="ETRobo.add_device"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.etrobo.ETRobo.add_device">[docs]</a>    <span class="k">def</span> <span class="nf">add_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ETRobo&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="ETRobo.add_device"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.etrobo.ETRobo.add_device">[docs]</a>    <span class="k">def</span> <span class="nf">add_device</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">device_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">Device</span><span class="p">]],</span>
+        <span class="n">port</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ETRobo&#39;</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;制御対象となるデバイスを登録する。</span>
 <span class="sd">        ここで登録されたデバイスオブジェクトは制御ハンドラに引数として渡される。</span>
 
-<span class="sd">        制御デバイスは以下のものをサポートしている:</span>
-<span class="sd">            motor, color_sensor, touch_sensor, sonar_sensor</span>
+<span class="sd">        引数`device_type`には以下のいずれかを指定する。</span>
+<span class="sd">        - `&#39;motor&#39;` or `Motor`</span>
+<span class="sd">        - `&#39;color_sensor&#39;` or `ColorSensor`</span>
+<span class="sd">        - `&#39;touch_sensor&#39;` or `TouchSensor`</span>
+<span class="sd">        - `&#39;sonar_sensor&#39;` or `SonarSensor`</span>
+<span class="sd">        - `&#39;gyro_sensor&#39;` or `GyroSensor`</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name: 制御オブジェクトの名前（handlerに渡される引数名）。</span>
@@ -140,7 +161,11 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            このオブジェクト</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">create_device</span><span class="p">(</span><span class="n">device_type</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">device_type</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="n">device_type</span> <span class="o">=</span> <span class="n">device_type</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="n">device_type</span> <span class="o">=</span> <span class="n">_pascal2snake</span><span class="p">(</span><span class="n">device_type</span><span class="p">)</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">create_device</span><span class="p">(</span><span class="n">device_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">port</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">device</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
@@ -157,19 +182,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="ETRobo.dispatch"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.etrobo.ETRobo.dispatch">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ETRobo.dispatch"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.etrobo.ETRobo.dispatch">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ETRobo&#39;</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;制御プログラムを実行する。</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            interval: 制御ハンドラの実行間隔</span>
 <span class="sd">            kwargs: バックエンドプログラムに渡される引数</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            このオブジェクト</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">create_dispatcher</span><span class="p">(</span>
             <span class="n">devices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">,</span>
             <span class="n">handlers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">,</span>
             <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">()</span></div></div>
+        <span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div></div>
 </pre></div>
 
            </div>
