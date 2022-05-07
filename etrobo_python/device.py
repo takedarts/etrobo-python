@@ -61,7 +61,11 @@ class Hub(object):
         raise NotImplementedError()
 
 
-class Motor(object):
+class Device(object):
+    pass
+
+
+class Motor(Device):
     def get_count(self) -> int:
         '''モーターの回転角度を返す。
 
@@ -92,7 +96,7 @@ class Motor(object):
         raise NotImplementedError()
 
 
-class ColorSensor(object):
+class ColorSensor(Device):
     def get_brightness(self) -> int:
         '''反射光の測定値を返す。
 
@@ -118,7 +122,7 @@ class ColorSensor(object):
         raise NotImplementedError()
 
 
-class TouchSensor(object):
+class TouchSensor(Device):
     def is_pressed(self) -> bool:
         '''タッチセンサの測定値を返す。
 
@@ -128,7 +132,7 @@ class TouchSensor(object):
         raise NotImplementedError()
 
 
-class SonarSensor(object):
+class SonarSensor(Device):
     def listen(self) -> bool:
         '''超音波信号の受信状況を返す。
 
@@ -146,7 +150,7 @@ class SonarSensor(object):
         raise NotImplementedError()
 
 
-class GyroSensor(object):
+class GyroSensor(Device):
     def reset(self) -> None:
         '''ジャイロセンサの角速度を0度にセットする。
         '''
