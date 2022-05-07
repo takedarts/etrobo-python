@@ -5,3 +5,6 @@ __pycache__
 .DS_Store
 docs/.doctrees  
 docs_build
+build
+dist
+etrobo_python.egg-info
