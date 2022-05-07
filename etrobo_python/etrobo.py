@@ -1,7 +1,19 @@
+from .device import Device
+
 try:
-    from typing import Any, Callable, List, Tuple
+    from typing import Any, Callable, List, Tuple, Type, Union
 except BaseException:
     pass
+
+
+def _pascal2snake(s: str) -> str:
+    '''パスカルケースの文字列をスネークケースに変換する。
+    '''
+    return ''.join(
+        '{}{}'.format(p.lower(), c.lower()) if i == 0 else
+        '_{}'.format(c.lower()) if not p.isupper() and c.isupper() else
+        c.lower()
+        for i, (p, c) in enumerate(zip(s[:-1], s[1:])))
 
 
 class ETRobo(object):
@@ -59,12 +71,21 @@ class ETRobo(object):
         self.devices.append((name, device))
         return self
 
-    def add_device(self, name: str, device_type: str, port: str) -> 'ETRobo':
+    def add_device(
+        self,
+        name: str,
+        device_type: Union[str, Type[Device]],
+        port: str,
+    ) -> 'ETRobo':
         '''制御対象となるデバイスを登録する。
         ここで登録されたデバイスオブジェクトは制御ハンドラに引数として渡される。
 
-        制御デバイスは以下のものをサポートしている:
-            motor, color_sensor, touch_sensor, sonar_sensor
+        引数`device_type`には以下のいずれかを指定する。
+        - `'motor'` or `Motor`
+        - `'color_sensor'` or `ColorSensor`
+        - `'touch_sensor'` or `TouchSensor`
+        - `'sonar_sensor'` or `SonarSensor`
+        - `'gyro_sensor'` or `GyroSensor`
 
         Args:
             name: 制御オブジェクトの名前（handlerに渡される引数名）。
@@ -74,7 +95,11 @@ class ETRobo(object):
         Returns:
             このオブジェクト
         '''
-        device = self.backend.create_device(device_type, port)
+        if isinstance(device_type, type):
+            device_type = device_type.__name__
+
+        device_type = _pascal2snake(device_type)
+        device = self.backend.create_device(device_type, str(port))
         self.devices.append((name, device))
         return self
 
@@ -91,12 +116,15 @@ class ETRobo(object):
         self.handlers.append(handler)
         return self
 
-    def dispatch(self, interval=0.01, **kwargs) -> None:
+    def dispatch(self, interval=0.01, **kwargs) -> 'ETRobo':
         '''制御プログラムを実行する。
 
         Args:
             interval: 制御ハンドラの実行間隔
             kwargs: バックエンドプログラムに渡される引数
+
+        Returns:
+            このオブジェクト
         '''
         self.backend.create_dispatcher(
             devices=self.devices,
@@ -104,3 +132,5 @@ class ETRobo(object):
             interval=interval,
             **kwargs,
         ).dispatch()
+
+        return self

@@ -1,3 +1,5 @@
 #!/usr/bin/env pybricks-micropython
-from observe import run
-run('pybricks')
+from observe_simulator import run
+
+if __name__ == '__main__':
+    run(backend='pybricks')

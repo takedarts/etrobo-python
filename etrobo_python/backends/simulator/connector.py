@@ -114,12 +114,14 @@ class _Connector(object):
                 self.hook()
 
                 # データをUnityに送信する
-                pack_into('<QQ', self.send_data, 8, self.send_time, self.recv_time)
+                pack_into('<QQ', self.send_data, 8, self.recv_time, self.recv_time)
                 sock.sendto(self.send_data, self.send_address)
         except socket.timeout:
             print('Timeout the connection')
+        except StopIteration:
+            print('Stopped by handler')
         except KeyboardInterrupt:
-            print('Interrupted by Keyboard')
+            print('Interrupted by keyboard')
         finally:
             print('Closing the connection.')
             sock.close()

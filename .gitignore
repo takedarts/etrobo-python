@@ -3,3 +3,8 @@ __pycache__
 .pytest_cache
 .vscode
 .DS_Store
+docs/.doctrees  
+docs_build
+build
+dist
+etrobo_python.egg-info
