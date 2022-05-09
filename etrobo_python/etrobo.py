@@ -16,34 +16,43 @@ def _pascal2snake(s: str) -> str:
         for i, (p, c) in enumerate(zip(s[:-1], s[1:])))
 
 
-class ETRobo(object):
+class ETRobo:
+    '''ロボットを制御するためのオブジェクトを作成する。
+    実行環境に適したバックエンドプログラムを指定すること。
+
+    以下のバックエンドプログラムを指定できる。
+
+    - simulator: Unityのシミュレータ環境でのロボット制御
+    - pybricks: micropythonを使ったEV3ロボットの制御
+    - raspike: micropythonを使ったRasPikeロボットの制御（未実装）
+
+    **プログラム例**
+
+    制御対象としてHUBタイプのデバイス「body」とmotorタイプのデバイス「motor1」を登録した場合、
+    制御ハンドラには Hubオブジェクトが引数「body」として、Motorオブジェクトが引数「motor1」として渡される。
+    シミュレータ上でHUBとモータを制御する場合は以下なプログラムとなる。
+
+    .. code-block:: python
+
+        from etrobo_python import ETRobo, Hub, Motor
+
+        def motor_handler(
+            body: Hub,
+            motor1: Motor,
+        ) -> None:
+            ...
+
+        etrobo = ETRobo(backend='simulator')
+        etrobo.add_hub('body')
+        etrobo.add_device('motor1', device_type=Motor, port='A')
+        etrobo.add_handler(motor_handler)
+        etrobo.dispatch()
+
+    Args:
+        backend: バックエンドプログラムの名前
+    '''
+
     def __init__(self, backend: str) -> None:
-        '''ロボットを制御するためのオブジェクトを作成する。
-        実行環境に適したバックエンドプログラムを指定すること。
-
-        バックエンドプログラム:
-            simulator: Unityのシミュレータ環境でのロボット制御
-            pybricks: micropythonを使ったEV3ロボットの制御
-            raspike: micropythonを使ったRasPikeロボットの制御（未実装）
-
-        例:
-            制御対象としてHUBタイプのデバイス「body」とmotorタイプのデバイス「motor1」を登録した場合、
-            制御ハンドラには Hubオブジェクトが引数「body」として、Motorオブジェクトが引数「motor1」として渡される。
-
-            def motor_handler(
-                body: etrobo_python.Hub,
-                motor1: etrobo_python.Motor,
-            ) -> None:
-                ...
-
-            etrobo = ETRobo(backend)
-            etrobo.add_hub('body')
-            etrobo.add_device('motor1', device_type='motor', port='A')
-            etrobo.add_handler(motor_handler)
-
-        Args:
-            backend: バックエンドプログラムの名前
-        '''
         if backend == 'simulator':
             from .backends import simulator
             self.backend = simulator  # type: Any
@@ -80,12 +89,13 @@ class ETRobo(object):
         '''制御対象となるデバイスを登録する。
         ここで登録されたデバイスオブジェクトは制御ハンドラに引数として渡される。
 
-        引数`device_type`には以下のいずれかを指定する。
-        - `'motor'` or `Motor`
-        - `'color_sensor'` or `ColorSensor`
-        - `'touch_sensor'` or `TouchSensor`
-        - `'sonar_sensor'` or `SonarSensor`
-        - `'gyro_sensor'` or `GyroSensor`
+        引数 `device_type` には以下のいずれかを指定する。
+
+        - `Motor` or `'motor'` : モータを追加する
+        - `ColorSensor` or `'color_sensor'` : カラーセンサを追加する。
+        - `TouchSensor` or `'touch_sensor'` : タッチセンサを追加する。
+        - `SonarSensor` or `'sonar_sensor'` : 超音波センサを追加する。
+        - `GyroSensor` or `'gyro_sensor'` : ジャイロセンサを追加する。
 
         Args:
             name: 制御オブジェクトの名前（handlerに渡される引数名）。
