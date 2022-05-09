@@ -42,7 +42,7 @@ class Dispatcher(object):
             while True:
                 interval_time = int(self.interval * 1000)
                 current_time = int(time.time() * 1000)
-                process_time = current_time // interval_time
+                process_time = (current_time // interval_time) * interval_time
 
                 if process_time == previous_time:
                     next_time = previous_time + interval_time

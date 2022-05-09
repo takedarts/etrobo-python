@@ -335,17 +335,51 @@
 <dt class="sig sig-object py" id="etrobo_python.etrobo.ETRobo">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">etrobo_python.etrobo.</span></span><span class="sig-name descname"><span class="pre">ETRobo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etrobo_python/etrobo.html#ETRobo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.etrobo.ETRobo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>ロボットを制御するためのオブジェクトを作成する。
+実行環境に適したバックエンドプログラムを指定すること。</p>
+<p>以下のバックエンドプログラムを指定できる。</p>
+<ul class="simple">
+<li><p>simulator: Unityのシミュレータ環境でのロボット制御</p></li>
+<li><p>pybricks: micropythonを使ったEV3ロボットの制御</p></li>
+<li><p>raspike: micropythonを使ったRasPikeロボットの制御（未実装）</p></li>
+</ul>
+<p><strong>プログラム例</strong></p>
+<p>制御対象としてHUBタイプのデバイス「body」とmotorタイプのデバイス「motor1」を登録した場合、
+制御ハンドラには Hubオブジェクトが引数「body」として、Motorオブジェクトが引数「motor1」として渡される。
+シミュレータ上でHUBとモータを制御する場合は以下なプログラムとなる。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">etrobo_python</span> <span class="kn">import</span> <span class="n">ETRobo</span><span class="p">,</span> <span class="n">Hub</span><span class="p">,</span> <span class="n">Motor</span>
+
+<span class="k">def</span> <span class="nf">motor_handler</span><span class="p">(</span>
+    <span class="n">body</span><span class="p">:</span> <span class="n">Hub</span><span class="p">,</span>
+    <span class="n">motor1</span><span class="p">:</span> <span class="n">Motor</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="o">...</span>
+
+<span class="n">etrobo</span> <span class="o">=</span> <span class="n">ETRobo</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;simulator&#39;</span><span class="p">)</span>
+<span class="n">etrobo</span><span class="o">.</span><span class="n">add_hub</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">)</span>
+<span class="n">etrobo</span><span class="o">.</span><span class="n">add_device</span><span class="p">(</span><span class="s1">&#39;motor1&#39;</span><span class="p">,</span> <span class="n">device_type</span><span class="o">=</span><span class="n">Motor</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
+<span class="n">etrobo</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">motor_handler</span><span class="p">)</span>
+<span class="n">etrobo</span><span class="o">.</span><span class="n">dispatch</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>backend</strong> – バックエンドプログラムの名前</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="etrobo_python.etrobo.ETRobo.add_device">
 <span class="sig-name descname"><span class="pre">add_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#etrobo_python.device.Device" title="etrobo_python.device.Device"><span class="pre">etrobo_python.device.Device</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#etrobo_python.etrobo.ETRobo" title="etrobo_python.etrobo.ETRobo"><span class="pre">etrobo_python.etrobo.ETRobo</span></a></span></span><a class="reference internal" href="_modules/etrobo_python/etrobo.html#ETRobo.add_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.etrobo.ETRobo.add_device" title="Permalink to this definition">¶</a></dt>
 <dd><p>制御対象となるデバイスを登録する。
 ここで登録されたデバイスオブジェクトは制御ハンドラに引数として渡される。</p>
-<p>引数`device_type`には以下のいずれかを指定する。
-- <cite>‘motor’</cite> or <cite>Motor</cite>
-- <cite>‘color_sensor’</cite> or <cite>ColorSensor</cite>
-- <cite>‘touch_sensor’</cite> or <cite>TouchSensor</cite>
-- <cite>‘sonar_sensor’</cite> or <cite>SonarSensor</cite>
-- <cite>‘gyro_sensor’</cite> or <cite>GyroSensor</cite></p>
+<p>引数 <cite>device_type</cite> には以下のいずれかを指定する。</p>
+<ul class="simple">
+<li><p><cite>Motor</cite> or <cite>‘motor’</cite> : モータを追加する</p></li>
+<li><p><cite>ColorSensor</cite> or <cite>‘color_sensor’</cite> : カラーセンサを追加する。</p></li>
+<li><p><cite>TouchSensor</cite> or <cite>‘touch_sensor’</cite> : タッチセンサを追加する。</p></li>
+<li><p><cite>SonarSensor</cite> or <cite>‘sonar_sensor’</cite> : 超音波センサを追加する。</p></li>
+<li><p><cite>GyroSensor</cite> or <cite>‘gyro_sensor’</cite> : ジャイロセンサを追加する。</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

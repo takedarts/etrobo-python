@@ -63,12 +63,12 @@ def run(backend: str) -> None:
 
     (ETRobo(backend=backend)
      .add_hub(name='hub')
-     .add_device(name='right_motor', device_type='motor', port='B')
-     .add_device(name='left_motor', device_type='motor', port='C')
-     .add_device(name='touch_sensor', device_type='touch_sensor', port='1')
-     .add_device(name='color_sensor', device_type='color_sensor', port='2')
-     .add_device(name='sonar_sensor', device_type='sonar_sensor', port='3')
-     .add_device(name='gyro_sensor', device_type='gyro_sensor', port='4')
+     .add_device(name='right_motor', device_type=Motor, port='B')
+     .add_device(name='left_motor', device_type=Motor, port='C')
+     .add_device(name='touch_sensor', device_type=TouchSensor, port='1')
+     .add_device(name='color_sensor', device_type=ColorSensor, port='2')
+     .add_device(name='sonar_sensor', device_type=SonarSensor, port='3')
+     .add_device(name='gyro_sensor', device_type=GyroSensor, port='4')
      .add_handler(print_obtained_values)
      .dispatch(course='left', interval=0.1))
 

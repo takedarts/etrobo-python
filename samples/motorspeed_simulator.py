@@ -39,7 +39,7 @@ class SpeedChecker(object):
 def run(backend: str) -> None:
     (ETRobo(backend=backend)
      .add_hub('hub')
-     .add_device('motor', device_type='motor', port='B')
+     .add_device('motor', device_type=Motor, port='B')
      .add_handler(SpeedChecker())
      .dispatch())
 

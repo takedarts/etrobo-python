@@ -82,34 +82,43 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:])))</span>
 
 
-<div class="viewcode-block" id="ETRobo"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.etrobo.ETRobo">[docs]</a><span class="k">class</span> <span class="nc">ETRobo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="ETRobo"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.etrobo.ETRobo">[docs]</a><span class="k">class</span> <span class="nc">ETRobo</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;ロボットを制御するためのオブジェクトを作成する。</span>
+<span class="sd">    実行環境に適したバックエンドプログラムを指定すること。</span>
+
+<span class="sd">    以下のバックエンドプログラムを指定できる。</span>
+
+<span class="sd">    - simulator: Unityのシミュレータ環境でのロボット制御</span>
+<span class="sd">    - pybricks: micropythonを使ったEV3ロボットの制御</span>
+<span class="sd">    - raspike: micropythonを使ったRasPikeロボットの制御（未実装）</span>
+
+<span class="sd">    **プログラム例**</span>
+
+<span class="sd">    制御対象としてHUBタイプのデバイス「body」とmotorタイプのデバイス「motor1」を登録した場合、</span>
+<span class="sd">    制御ハンドラには Hubオブジェクトが引数「body」として、Motorオブジェクトが引数「motor1」として渡される。</span>
+<span class="sd">    シミュレータ上でHUBとモータを制御する場合は以下なプログラムとなる。</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from etrobo_python import ETRobo, Hub, Motor</span>
+
+<span class="sd">        def motor_handler(</span>
+<span class="sd">            body: Hub,</span>
+<span class="sd">            motor1: Motor,</span>
+<span class="sd">        ) -&gt; None:</span>
+<span class="sd">            ...</span>
+
+<span class="sd">        etrobo = ETRobo(backend=&#39;simulator&#39;)</span>
+<span class="sd">        etrobo.add_hub(&#39;body&#39;)</span>
+<span class="sd">        etrobo.add_device(&#39;motor1&#39;, device_type=Motor, port=&#39;A&#39;)</span>
+<span class="sd">        etrobo.add_handler(motor_handler)</span>
+<span class="sd">        etrobo.dispatch()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        backend: バックエンドプログラムの名前</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;ロボットを制御するためのオブジェクトを作成する。</span>
-<span class="sd">        実行環境に適したバックエンドプログラムを指定すること。</span>
-
-<span class="sd">        バックエンドプログラム:</span>
-<span class="sd">            simulator: Unityのシミュレータ環境でのロボット制御</span>
-<span class="sd">            pybricks: micropythonを使ったEV3ロボットの制御</span>
-<span class="sd">            raspike: micropythonを使ったRasPikeロボットの制御（未実装）</span>
-
-<span class="sd">        例:</span>
-<span class="sd">            制御対象としてHUBタイプのデバイス「body」とmotorタイプのデバイス「motor1」を登録した場合、</span>
-<span class="sd">            制御ハンドラには Hubオブジェクトが引数「body」として、Motorオブジェクトが引数「motor1」として渡される。</span>
-
-<span class="sd">            def motor_handler(</span>
-<span class="sd">                body: etrobo_python.Hub,</span>
-<span class="sd">                motor1: etrobo_python.Motor,</span>
-<span class="sd">            ) -&gt; None:</span>
-<span class="sd">                ...</span>
-
-<span class="sd">            etrobo = ETRobo(backend)</span>
-<span class="sd">            etrobo.add_hub(&#39;body&#39;)</span>
-<span class="sd">            etrobo.add_device(&#39;motor1&#39;, device_type=&#39;motor&#39;, port=&#39;A&#39;)</span>
-<span class="sd">            etrobo.add_handler(motor_handler)</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            backend: バックエンドプログラムの名前</span>
-<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;simulator&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.backends</span> <span class="kn">import</span> <span class="n">simulator</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">simulator</span>  <span class="c1"># type: Any</span>
@@ -146,12 +155,13 @@
         <span class="sd">&#39;&#39;&#39;制御対象となるデバイスを登録する。</span>
 <span class="sd">        ここで登録されたデバイスオブジェクトは制御ハンドラに引数として渡される。</span>
 
-<span class="sd">        引数`device_type`には以下のいずれかを指定する。</span>
-<span class="sd">        - `&#39;motor&#39;` or `Motor`</span>
-<span class="sd">        - `&#39;color_sensor&#39;` or `ColorSensor`</span>
-<span class="sd">        - `&#39;touch_sensor&#39;` or `TouchSensor`</span>
-<span class="sd">        - `&#39;sonar_sensor&#39;` or `SonarSensor`</span>
-<span class="sd">        - `&#39;gyro_sensor&#39;` or `GyroSensor`</span>
+<span class="sd">        引数 `device_type` には以下のいずれかを指定する。</span>
+
+<span class="sd">        - `Motor` or `&#39;motor&#39;` : モータを追加する</span>
+<span class="sd">        - `ColorSensor` or `&#39;color_sensor&#39;` : カラーセンサを追加する。</span>
+<span class="sd">        - `TouchSensor` or `&#39;touch_sensor&#39;` : タッチセンサを追加する。</span>
+<span class="sd">        - `SonarSensor` or `&#39;sonar_sensor&#39;` : 超音波センサを追加する。</span>
+<span class="sd">        - `GyroSensor` or `&#39;gyro_sensor&#39;` : ジャイロセンサを追加する。</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name: 制御オブジェクトの名前（handlerに渡される引数名）。</span>
