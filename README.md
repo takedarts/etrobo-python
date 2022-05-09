@@ -7,7 +7,7 @@
 
 ### ミドルウェアの使い方
 - [チュートリアル](https://github.com/takedarts/etrobo-python/wiki/tutorial)
-- [APIドキュメント](https://github.com/takedarts/etrobo-python/wiki/api)
+- [APIドキュメント](https://takedarts.github.io/etrobo-python/etrobo_python.html)
 
 ## これは何？
 2022年度のETロボコンはリアル大会とシミュレーション大会の両方が行われることになりました。
@@ -22,7 +22,7 @@
 そこで、**シミュレータ環境とEV3環境の両方に対応した制御プログラムをpythonで開発するためのミドルウェア**を作りました。
 それぞれの環境で共通となる部分をAPIとして公開し、それぞれの環境で異なる部分はバックエンドとして隠蔽する構成になっています。
 そのため、このミドルウェアで開発した制御プログラムは、バックエンドを変更することにより、シミュレータ環境とEV3環境のどちらでも動作します。
-詳しくは[samplesディレクトリ](samples)に置いてあるサンプルプログラムを参考にしてください。
+詳しくは[samplesディレクトリ](https://github.com/takedarts/etrobo-python/tree/main/samples)に置いてあるサンプルプログラムを参考にしてください。
 
 現在のバージョンではシミュレータ環境とEV3環境のみをサポートしています。
 SPIKE環境(RasPike環境)については実機を入手できましたら開発をはじめます。
