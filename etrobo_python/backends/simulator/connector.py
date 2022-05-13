@@ -148,7 +148,7 @@ class Motor(object):
 
     def set_pwm(self, pwm: int) -> None:
         pwm = min(max(pwm, -100), 100)
-        _write_values('<I', 36 + self.port * 4, pwm)
+        _write_values('<i', 36 + self.port * 4, pwm)
 
     def set_brake(self, brake: bool) -> None:
         _write_values('<I', 52 + self.port * 4, int(brake))
