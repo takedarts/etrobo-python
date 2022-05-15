@@ -40,12 +40,12 @@ class Dispatcher(object):
     def dispatch(self) -> None:
         variables = {name: device for name, device in self.devices}
 
-        def hook():
+        def run_handlers():
             for handler in self.handlers:
                 handler(**variables)
 
         connect_simulator(
-            hook=hook,
+            handler=run_handlers,
             address=_get_remote_address(),
             course=self.course,
             interval=self.interval,
