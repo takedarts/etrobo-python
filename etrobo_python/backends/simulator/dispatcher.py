@@ -10,6 +10,7 @@ def create_dispatcher(
     handlers: List[Callable[..., None]],
     interval: float = 0.01,
     course: str = 'left',
+    timeout: float = 5.0,
     **kwargs,
 ) -> Any:
     return Dispatcher(
@@ -17,6 +18,7 @@ def create_dispatcher(
         handlers=handlers,
         interval=interval,
         course=course,
+        timeout=timeout,
     )
 
 
@@ -27,11 +29,13 @@ class Dispatcher(object):
         handlers: List[Callable[..., None]],
         interval: float,
         course: str,
+        timeout: float,
     ) -> None:
         self.devices = devices
         self.handlers = handlers
         self.interval = interval
         self.course = course
+        self.timeout = timeout
 
     def dispatch(self) -> None:
         variables = {name: device for name, device in self.devices}
@@ -42,9 +46,10 @@ class Dispatcher(object):
 
         connect_simulator(
             handler=run_handlers,
+            interval=self.interval,
             address=_get_remote_address(),
             course=self.course,
-            interval=self.interval,
+            timeout=self.timeout,
         )
 
 

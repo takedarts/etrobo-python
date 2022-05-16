@@ -8,10 +8,10 @@ _CONNECTOR: Optional['_Connector'] = None
 
 def connect_simulator(
     handler: Callable[[], None],
-    address: str = '127.0.0.1',
-    course: str = 'left',
-    interval: float = 0.01,
-    timeout: float = 5.0,
+    interval: float,
+    address: str,
+    course: str,
+    timeout: float,
 ) -> None:
     global _CONNECTOR
 
@@ -42,10 +42,10 @@ class _Connector(object):
     def __init__(
         self,
         handler: Callable[[], None],
-        address: str = '127.0.0.1',
-        course: str = 'left',
-        interval: float = 0.01,
-        timeout: float = 5.0,
+        interval: float,
+        address: str,
+        course: str,
+        timeout: float,
     ) -> None:
         if course.lower() == 'right':
             self.send_address = (address, 54003)
