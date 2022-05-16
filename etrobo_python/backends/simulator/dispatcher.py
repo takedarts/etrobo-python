@@ -10,7 +10,6 @@ def create_dispatcher(
     handlers: List[Callable[..., None]],
     interval: float = 0.01,
     course: str = 'left',
-    debug: bool = False,
     **kwargs,
 ) -> Any:
     return Dispatcher(
@@ -18,7 +17,6 @@ def create_dispatcher(
         handlers=handlers,
         interval=interval,
         course=course,
-        debug=debug,
     )
 
 
@@ -29,13 +27,11 @@ class Dispatcher(object):
         handlers: List[Callable[..., None]],
         interval: float = 0.01,
         course: str = 'left',
-        debug: bool = False,
     ) -> None:
         self.devices = devices
         self.handlers = handlers
         self.interval = interval
         self.course = course
-        self.debug = debug
 
     def dispatch(self) -> None:
         variables = {name: device for name, device in self.devices}
