@@ -54,4 +54,4 @@ class Dispatcher(object):
                 for handler in self.handlers:
                     handler(**variables)
         except StopIteration:
-            print('Stopped by handler')
+            print('Stopped by handler.')

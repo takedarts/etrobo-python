@@ -55,7 +55,7 @@ def print_obtained_values_in_realworld(
     print('\n'.join(lines))
 
 
-def run(backend: str) -> None:
+def run(backend: str, **kwargs) -> None:
     if backend == 'simulator':
         print_obtained_values = print_obtained_values_in_simulation
     else:
@@ -70,7 +70,7 @@ def run(backend: str) -> None:
      .add_device(name='sonar_sensor', device_type=SonarSensor, port='3')
      .add_device(name='gyro_sensor', device_type=GyroSensor, port='4')
      .add_handler(print_obtained_values)
-     .dispatch(course='left', interval=0.1))
+     .dispatch(course='left', interval=0.1, **kwargs))
 
 
 if __name__ == '__main__':

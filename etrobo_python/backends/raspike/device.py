@@ -1,6 +1,8 @@
+import time
 from typing import Any, Tuple
 
 import etrobo_python
+
 from . import connector
 
 
@@ -8,7 +10,7 @@ def create_device(device_type: str, port: str) -> Any:
     if device_type == 'hub':
         return Hub()
     elif device_type == 'motor':
-        return Motor(get_sim_port(port))
+        return Motor(get_raspike_port(port))
     elif device_type == 'color_sensor':
         return ColorSensor()
     elif device_type == 'touch_sensor':
@@ -21,9 +23,9 @@ def create_device(device_type: str, port: str) -> Any:
         raise NotImplementedError(f'Unsupported device: {device_type}')
 
 
-def get_sim_port(port: str) -> int:
+def get_raspike_port(port: str) -> int:
     port_names = ('A', 'B', 'C', 'D', '1', '2', '3', '4')
-    port_values = (0, 1, 2, 3, -1, -1, -1, -1)
+    port_values = (0, 1, 2, -1, -1, -1, -1, -1)
 
     if port in port_names:
         return port_values[port_names.index(port)]
@@ -36,22 +38,16 @@ class Hub(object):
         self.hub = connector.Hub()
 
     def set_led(self, color: str) -> None:
-        color_value = color.lower()[0]
-        color_names = ('b', 'r', 'g', 'o')
-
-        if color_value in color_names:
-            self.hub.set_led(color_names.index(color_value))
-        else:
-            self.hub.set_led(0)
+        pass
 
     def get_time(self) -> float:
-        return self.hub.get_time()
+        return time.time()
 
     def get_battery_voltage(self) -> int:
-        return 8000
+        return self.hub.get_battery_voltage()
 
     def get_battery_current(self) -> int:
-        return 200
+        return self.hub.get_battery_current()
 
     def play_speaker_tone(self, frequency: int, duration: float) -> None:
         pass

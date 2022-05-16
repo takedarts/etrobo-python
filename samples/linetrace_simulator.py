@@ -29,14 +29,14 @@ class LineTracer(object):
         left_motor.set_power(left_power)
 
 
-def run(backend: str, target: int, power: int, pid_p: float) -> None:
+def run(backend: str, target: int, power: int, pid_p: float, **kwargs) -> None:
     (ETRobo(backend=backend)
      .add_device('right_motor', device_type=Motor, port='B')
      .add_device('left_motor', device_type=Motor, port='C')
      .add_device('touch_sensor', device_type=TouchSensor, port='1')
      .add_device('color_sensor', device_type=ColorSensor, port='2')
      .add_handler(LineTracer(target, power, pid_p))
-     .dispatch())
+     .dispatch(**kwargs))
 
 
 if __name__ == '__main__':

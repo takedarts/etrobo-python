@@ -16,13 +16,14 @@ def connect_simulator(
     global _CONNECTOR
 
     if _CONNECTOR is not None:
-        raise Exception('Simulator is already running.')
+        raise Exception(
+            'This process have already connected to the simulator.')
 
     _CONNECTOR = _Connector(
         handler=handler,
+        interval=interval,
         address=address,
         course=course,
-        interval=interval,
         timeout=timeout)
     _CONNECTOR.run()
     _CONNECTOR = None
@@ -33,7 +34,7 @@ def _get_connector() -> '_Connector':
 
     if _CONNECTOR is None:
         raise Exception(
-            'This process have been not connected the simulator yet.')
+            'This process have been not connected to the simulator yet.')
 
     return _CONNECTOR
 
@@ -102,7 +103,7 @@ class _Connector(object):
             receiver_thread.join()
             handler_thread.join()
         except KeyboardInterrupt:
-            print('Interrupted by keyboard')
+            print('Interrupted by keyboard.')
             self.running = False
             self.event.set()
             receiver_thread.join()
@@ -134,7 +135,7 @@ class _Connector(object):
                 # 計算スレッドに通知
                 self.event.set()
         except socket.timeout:
-            print('Timeout the connection')
+            print('Connection is timeout.')
         finally:
             print('Closing the connection.')
             self.running = False
@@ -167,7 +168,7 @@ class _Connector(object):
                 pack_into('<QQ', self.send_data, 8, self.recv_time, self.recv_time)
                 self.sock.sendto(self.send_data, self.send_address)
         except StopIteration:
-            print('Stopped by handler')
+            print('Stopped by handler.')
         finally:
             self.running = False
 
