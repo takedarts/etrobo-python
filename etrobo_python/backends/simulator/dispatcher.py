@@ -25,8 +25,8 @@ class Dispatcher(object):
         self,
         devices: List[Tuple[str, Any]],
         handlers: List[Callable[..., None]],
-        interval: float = 0.01,
-        course: str = 'left',
+        interval: float,
+        course: str,
     ) -> None:
         self.devices = devices
         self.handlers = handlers
