@@ -36,12 +36,12 @@ class SpeedChecker(object):
         motor.set_power(self.power)
 
 
-def run(backend: str) -> None:
+def run(backend: str, **kwargs) -> None:
     (ETRobo(backend=backend)
      .add_hub('hub')
      .add_device('motor', device_type=Motor, port='B')
      .add_handler(SpeedChecker())
-     .dispatch())
+     .dispatch(**kwargs))
 
 
 if __name__ == '__main__':

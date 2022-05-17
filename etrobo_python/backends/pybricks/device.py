@@ -16,24 +16,24 @@ def create_device(device_type: str, port: str) -> Any:
     if device_type == 'hub':
         return Hub()
 
-    ev3port = get_ev3port(port)
+    ev3_port = get_ev3_port(port)
 
     if device_type == 'motor':
-        return Motor(ev3port)
+        return Motor(ev3_port)
     elif device_type == 'color_sensor':
-        return ColorSensor(ev3port)
+        return ColorSensor(ev3_port)
     elif device_type == 'touch_sensor':
-        return TouchSensor(ev3port)
+        return TouchSensor(ev3_port)
     elif device_type == 'sonar_sensor':
-        return SonarSensor(ev3port)
+        return SonarSensor(ev3_port)
     elif device_type == 'gyro_sensor':
-        return GyroSensor(ev3port)
+        return GyroSensor(ev3_port)
     else:
         raise NotImplementedError(
             'Unsupported device: {}'.format(device_type))
 
 
-def get_ev3port(port: str) -> Port:
+def get_ev3_port(port: str) -> Port:
     port_names = ('A', 'B', 'C', 'D', '1', '2', '3', '4')
     port_values = (Port.A, Port.B, Port.C, Port.D,
                    Port.S1, Port.S2, Port.S3, Port.S4)
@@ -126,7 +126,7 @@ class SonarSensor(etrobo_python.SonarSensor):
         return self.sonar_sensor.distance()
 
 
-class GyroSensor(object):
+class GyroSensor(etrobo_python.GyroSensor):
     def __init__(self, port: Port) -> None:
         self.gyro_sensor = ev3dev.GyroSensor(port)
 
