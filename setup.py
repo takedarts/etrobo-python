@@ -6,7 +6,7 @@ setuptools.setup(
     name='etrobo_python',
     version=etrobo_python.__version__,
     author=etrobo_python.__author__,
-    author_email='takeda@cs.tohoku-gakuin.ac.jp',
+    author_email='takedarts@mail.tohoku-gakuin.ac.jp',
     license='MIT',
     description=pathlib.Path('README.txt').read_text().split('\n')[0],
     long_description=pathlib.Path('README.txt').read_text(),
