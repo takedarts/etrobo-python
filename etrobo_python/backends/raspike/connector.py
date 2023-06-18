@@ -4,6 +4,11 @@ from typing import Callable, Optional, Tuple
 
 import serial
 
+# モーターの回転方向
+# モーターの設定値と取得値の方向を設定する
+# +1 か -1 を設定すること
+MOTOR_SIGN = -1
+
 _CONNECTOR: Optional['_Connector'] = None
 
 # 受信データ
@@ -257,13 +262,14 @@ class Motor(object):
         self.port = port
 
     def get_count(self) -> int:
-        return _get_connector().recv_data[13 + self.port]
+        return MOTOR_SIGN * _get_connector().recv_data[13 + self.port]
 
     def reset_count(self) -> None:
         _get_connector().send_command(
             command=9 + self.port, value=0, wait_for_ack=True)
 
     def set_pwm(self, power: int) -> None:
+        power = MOTOR_SIGN * power
         _get_connector().send_command(
             command=1 + self.port, value=power, wait_for_ack=False)
 
