@@ -24,9 +24,6 @@
 そのため、このミドルウェアで開発した制御プログラムは、バックエンドを変更することにより、シミュレータ環境とEV3環境のどちらでも動作します。
 詳しくは[samplesディレクトリ](https://github.com/takedarts/etrobo-python/tree/main/samples)に置いてあるサンプルプログラムを参考にしてください。
 
-現在のバージョンではシミュレータ環境とEV3環境のみをサポートしています。
-SPIKE環境(RasPike環境)については実機を入手できましたら開発をはじめます。
-
 ## サンプルプログラム
 ```python
 from etrobo_python import (ColorSensor, ETRobo, GyroSensor, Hub, Motor,
