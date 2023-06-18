@@ -1,10 +1,10 @@
 import time
 
-import etrobo_python
-
 import pybricks.ev3devices as ev3dev
 import pybricks.hubs as hubs
-from pybricks.parameters import Port, Color
+from pybricks.parameters import Button, Color, Port
+
+import etrobo_python
 
 try:
     from typing import Any, Tuple
@@ -73,6 +73,18 @@ class Hub(object):
 
     def set_speaker_volume(self, volume: int) -> None:
         self.ev3brick.speaker.set_volume(volume)
+
+    def is_left_button_pressed(self) -> bool:
+        return Button.LEFT in self.ev3brick.buttons.pressed()
+
+    def is_right_button_pressed(self) -> bool:
+        return Button.RIGHT in self.ev3brick.buttons.pressed()
+
+    def is_up_button_pressed(self) -> bool:
+        return Button.UP in self.ev3brick.buttons.pressed()
+
+    def is_down_button_pressed(self) -> bool:
+        return Button.DOWN in self.ev3brick.buttons.pressed()
 
 
 class Motor(etrobo_python.Motor):

@@ -59,6 +59,18 @@ class Hub(object):
     def set_speaker_volume(self, volume: int) -> None:
         pass
 
+    def is_left_button_pressed(self) -> bool:
+        return (self.hub.get_button_pressed() & 0x01) != 0
+
+    def is_right_button_pressed(self) -> bool:
+        return (self.hub.get_button_pressed() & 0x02) != 0
+
+    def is_up_button_pressed(self) -> bool:
+        return (self.hub.get_button_pressed() & 0x04) != 0
+
+    def is_down_button_pressed(self) -> bool:
+        return (self.hub.get_button_pressed() & 0x08) != 0
+
 
 class Motor(etrobo_python.Motor):
     def __init__(self, port: int) -> None:

@@ -180,6 +180,9 @@ class Hub(object):
     def get_time(self) -> float:
         return _get_connector().recv_time / 1_000_000
 
+    def get_button_pressed(self) -> int:
+        return _get_connector().read_values('<i', 32)[0]
+
 
 class Motor(object):
     def __init__(self, port: int) -> None:

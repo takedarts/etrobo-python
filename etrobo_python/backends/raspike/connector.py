@@ -24,8 +24,9 @@ _CONNECTOR: Optional['_Connector'] = None
 # 13: 64 - モータA（Count）
 # 14: 65 - モータB（Count）
 # 15: 66 - モータC（Count）
+# 16:  0 - 本体のボタン(左:+1, 右:+2, 中央:+16)
 _RECV_CMD_INDEX = [
-    -1, 0, 1, 2, 3, 4, 5, 6, 7, -1,
+    16, 0, 1, 2, 3, 4, 5, 6, 7, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, 8, 9, -1, -1, -1, -1, 10, 11,
     12, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -113,7 +114,7 @@ class _Connector(object):
         self.handler = handler
         self.interval = interval
 
-        self.recv_data = [0] * 16
+        self.recv_data = [0] * (max(_RECV_CMD_INDEX) + 1)
         self.send_data = bytearray(3)
         self.running = False
 
@@ -185,7 +186,7 @@ class _Connector(object):
                 command, value = _parse_received_command(buffer)
 
                 # 受信データを反映する
-                if 0 <= command < len(_RECV_CMD_INDEX):
+                if 0 <= command < len(_RECV_CMD_INDEX) and _RECV_CMD_INDEX[command] != -1:
                     self.recv_data[_RECV_CMD_INDEX[command]] = value
         finally:
             self.running = False
@@ -246,6 +247,9 @@ class Hub(object):
 
     def get_battery_current(self) -> int:
         return _get_connector().recv_data[11]
+
+    def get_button_pressed(self) -> int:
+        return _get_connector().recv_data[16]
 
 
 class Motor(object):

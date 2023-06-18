@@ -60,6 +60,42 @@ class Hub(object):
         '''
         raise NotImplementedError()
 
+    def is_left_button_pressed(self) -> bool:
+        '''左ボタンの状態を返す。
+        左ボタンが押されていればTrueを返し、押されていなければFalseを返す。
+
+        Returns:
+            左ボタンの状態。
+        '''
+        raise NotImplementedError()
+
+    def is_right_button_pressed(self) -> bool:
+        '''右ボタンの状態を返す。
+        右ボタンが押されていればTrueを返し、押されていなければFalseを返す。
+
+        Returns:
+            右ボタンの状態。
+        '''
+        raise NotImplementedError()
+
+    def is_up_button_pressed(self) -> bool:
+        '''上ボタンの状態を返す。
+        上ボタンが押されていればTrueを返し、押されていなければFalseを返す。
+
+        Returns:
+            上ボタンの状態。
+        '''
+        raise NotImplementedError()
+
+    def is_down_button_pressed(self) -> bool:
+        '''下ボタンの状態を返す。
+        下ボタンが押されていればTrueを返し、押されていなければFalseを返す。
+
+        Returns:
+            下ボタンの状態。
+        '''
+        raise NotImplementedError()
+
 
 class Device(object):
     pass
