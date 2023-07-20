@@ -7,7 +7,7 @@ import serial
 # モーターの回転方向
 # モーターの設定値と取得値の方向を設定する
 # +1 か -1 を設定すること
-MOTOR_SIGN = -1
+MOTOR_SIGN = 1
 
 _CONNECTOR: Optional['_Connector'] = None
 

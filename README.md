@@ -1,8 +1,11 @@
 ## ETロボコン2023のためのpythonミドルウェア
 
+**[注意] Version 0.4のみRasPikeのモーターの回転方向が逆に設定されています。**
+
 ### インストール方法
 - [Windows環境でのインストール方法とプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-windows)
 - [MacOSX環境でのインストール方法とプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-macosx)
+- [RasPike(実機)でのプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-raspike)
 - [EV3(実機)でのプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-ev3)
 
 ### ミドルウェアの使い方
