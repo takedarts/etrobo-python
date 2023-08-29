@@ -208,6 +208,9 @@ class _Connector(object):
 
 
 class Hub(object):
+    def set_led(self, code: int) -> None:
+        _get_connector().send_command(command=0x03, value=code)
+
     def get_time(self) -> int:
         return int.from_bytes(_get_connector().recv_data[2:5], 'big')
 

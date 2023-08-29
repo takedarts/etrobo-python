@@ -37,7 +37,24 @@ class Hub(object):
         self.hub = connector.Hub()
 
     def set_led(self, color: str) -> None:
-        pass
+        if color.startswith('bla'):  # black
+            color_code = 0
+        elif color.startswith('p'):  # pink
+            color_code = 1
+        elif color.startswith('blu'):  # blue
+            color_code = 3
+        elif color.startswith('g'):  # green
+            color_code = 6
+        elif color.startswith('y'):  # yellow
+            color_code = 7
+        elif color.startswith('o'):  # orange
+            color_code = 8
+        elif color.startswith('r'):  # red
+            color_code = 9
+        else:
+            return
+
+        self.hub.set_led(color_code)
 
     def get_time(self) -> float:
         return self.hub.get_time() / 1000
