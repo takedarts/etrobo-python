@@ -95,7 +95,7 @@ class _Connector(object):
         self.running = False
 
         self.recv_data = bytearray(27)
-        self.send_data = bytearray(4)
+        self.send_data = bytearray(7)
 
         self.serial = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
 
@@ -203,7 +203,7 @@ class _Connector(object):
         self.send_data[0] = 0x7f
         self.send_data[1] = 0x7f
         self.send_data[2] = command
-        self.send_data[3] = value & 0xff
+        self.send_data[3:7] = int.to_bytes(value & 0xffffffff, 4, 'big')
         self.serial.write(self.send_data)
 
 
@@ -220,6 +220,13 @@ class Hub(object):
     def get_battery_current(self) -> int:
         return int.from_bytes(_get_connector().recv_data[25:27], 'big')
 
+    def play_speaker_tone(self, frequency: int, duration: int) -> None:
+        value = (frequency & 0xffff) << 16 | duration & 0xffff
+        _get_connector().send_command(command=0x01, value=value)
+
+    def set_speaker_volume(self, volume: int) -> None:
+        _get_connector().send_command(command=0x02, value=volume)
+
     def get_button_pressed(self) -> int:
         return int.from_bytes(_get_connector().recv_data[21:23], 'big')
 
@@ -230,12 +237,8 @@ class Motor(object):
 
     def get_count(self) -> int:
         index = 5 + self.port * 3
-        count = int.from_bytes(_get_connector().recv_data[index:index + 3], 'big')
-
-        if count < 0x800000:
-            return count
-        else:
-            return count - 0x1000000
+        return int.from_bytes(
+            _get_connector().recv_data[index:index + 3], 'big', signed=True)
 
     def reset_count(self) -> None:
         command = (self.port + 1) * 16 + 3

@@ -66,10 +66,10 @@ class Hub(object):
         return self.hub.get_battery_current()
 
     def play_speaker_tone(self, frequency: int, duration: float) -> None:
-        pass
+        self.hub.play_speaker_tone(frequency, int(duration * 1000))
 
     def set_speaker_volume(self, volume: int) -> None:
-        pass
+        self.hub.set_speaker_volume(min(max(volume // 10, 0), 10))
 
     def is_left_button_pressed(self) -> bool:
         return (self.hub.get_button_pressed() & 0x02) != 0
