@@ -19,13 +19,14 @@ import ubinascii
 受信（命令）データ: バイナリデータを送受信する
 [0-1] magic number (0x7f, 0x7f)
 [2-2] command
-[3-3] value
+[3-6] value
 
 command: number - value
 0x00: sleep - time (milli seconds)
 0x01: sound - frequency (Hz), duration (milli seconds) (2bytes each)
 0x02: volume - volume (0-10)
-0x03: led - number (0-20)
+0x03: led - color (0-10)
+0x04: screen - number (0-20)
 0x11: motor A power - power
 0x12: motor A brake - 0/1
 0x13: motor A reset - 0
@@ -56,7 +57,7 @@ INVERT_MOTOR_C = -1
 MAGIC_NUMBER = 0x7f
 
 # スクリーンに表示する番号のイメージデータ
-LED_IMAGES = [
+SCREEN_IMAGES = [
     hub.Image('09990:09090:09090:09090:09990:'),
     hub.Image('00900:00900:00900:00900:00900:'),
     hub.Image('09990:00090:09990:09000:09990:'),
@@ -196,8 +197,10 @@ class Device(object):
             hub.sound.beep(freq, duration)
         elif command == 0x02:
             hub.sound.volume(value)
-        elif command == 0x03 and value < len(LED_IMAGES):
-            hub.display.show(LED_IMAGES[value])
+        elif command == 0x03 and 0 <= value < 10:
+            hub.led(value)
+        elif command == 0x04 and value < len(SCREEN_IMAGES):
+            hub.display.show(SCREEN_IMAGES[value])
         elif command == 0x11:
             self.motor_a.set_power(value)
         elif command == 0x12:
@@ -264,7 +267,7 @@ class Device(object):
 class Communicator(object):
     def __init__(self):
         # 送受信バッファを作成する
-        self.recv_buffer = bytearray(4)
+        self.recv_buffer = bytearray(7)
         self.send_buffer = bytearray(24)
         self.send_buffer[0] = MAGIC_NUMBER
 
@@ -288,9 +291,9 @@ class Communicator(object):
             # 命令データを受信する
             if self._receive():
                 command = self.recv_buffer[2]
-                value = self.recv_buffer[3]
-                if value >= 0x80:
-                    value = value - 0x100
+                value = int.from_bytes(self.recv_buffer[3:7], 'big')
+                if value >= 0x80000000:
+                    value -= 0x100000000
                 device.execute(command, value)
                 continue
 
