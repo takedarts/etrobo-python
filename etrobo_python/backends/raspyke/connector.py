@@ -136,7 +136,10 @@ class _Connector(object):
                     continue
 
                 # base64の文字列をデコードしてデータを取得する
-                data = base64.b64decode(buffer.decode('ascii'))
+                try:
+                    data = base64.b64decode(buffer.decode('ascii'))
+                except UnicodeDecodeError:
+                    continue
 
                 # 受信データを保存する
                 self.recv_data[:21] = data[:21]
