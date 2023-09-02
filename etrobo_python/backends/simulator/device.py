@@ -3,6 +3,19 @@ from typing import Any, Tuple
 import etrobo_python
 from . import connector
 
+try:
+    import os
+    os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
+    import pygame
+    pygame.mixer.init(frequency=44100, channels=1)
+except ImportError:
+    pygame = None  # type: ignore
+
+try:
+    import numpy as np
+except ImportError:
+    np = None  # type: ignore
+
 
 def create_device(device_type: str, port: str) -> Any:
     if device_type == 'hub':
@@ -31,9 +44,22 @@ def get_sim_port(port: str) -> int:
         raise Exception(f'Unknown port: {port}')
 
 
+def play_beep_sound(freq: float, duration: float, volume: float) -> None:
+    if pygame is None or np is None:
+        return
+
+    sr = 44100
+    length = int(sr * duration)
+    wave = np.sin(np.arange(length) * freq * np.pi * 2 / sr) * volume
+    wave = (wave * 32767).astype(np.int16)
+    sound = pygame.sndarray.make_sound(wave.astype(np.int16))
+    sound.play()
+
+
 class Hub(object):
     def __init__(self):
         self.hub = connector.Hub()
+        self.volume = 1.0
 
     def set_led(self, color: str) -> None:
         color_value = color.lower()[0]
@@ -54,10 +80,10 @@ class Hub(object):
         return 200
 
     def play_speaker_tone(self, frequency: int, duration: float) -> None:
-        pass
+        play_beep_sound(frequency, duration, self.volume)
 
     def set_speaker_volume(self, volume: int) -> None:
-        pass
+        self.volume = min(max(volume / 100, 0.0), 1.0)
 
     def is_left_button_pressed(self) -> bool:
         return (self.hub.get_button_pressed() & 0x01) != 0
