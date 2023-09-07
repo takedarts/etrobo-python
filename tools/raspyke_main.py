@@ -136,17 +136,20 @@ class ColorSensor(object):
         # ambient, color, reflectモード
         if self.mode == 0 or self.mode == 1 or self.mode == 2:
             if values is not None and values[0] is not None:
-                return values[0], 0, 0
+                return values[0], 0, self.mode
             else:
-                return 0, 0, 0
+                return 0, 0, self.mode
         # rgbモード
         elif self.mode == 3:
             if values is not None and len(values) >= 3 and values[0] is not None:
-                return values[0] // 4, values[1] // 4, values[2] // 4
+                red = min(values[0] // 4, 254) + 1
+                green = min(values[1] // 4, 254) + 1
+                blue = min(values[2] // 4, 254) + 1
+                return red, green, blue
             else:
-                return 0, 0, 0
+                return 1, 1, 1
         else:
-            return 0, 0, 0
+            return 0, 0, 255
 
 
 class UltrasonicSensor(object):

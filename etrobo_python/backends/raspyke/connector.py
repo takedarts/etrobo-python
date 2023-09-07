@@ -290,27 +290,33 @@ class Motor(object):
 
 
 class ColorSensor(object):
-    def __init__(self) -> None:
-        self.mode = -1
-
     def get_brightness(self) -> int:
-        self._change_mode(2)
+        conn = _get_connector()
+
+        if conn.recv_data[15] != 0 or conn.recv_data[16] != 2:
+            conn.send_command(command=0x41, value=2)
+
         return _get_connector().recv_data[14]
 
     def get_ambient(self) -> int:
-        self._change_mode(0)
+        conn = _get_connector()
+
+        if conn.recv_data[15] != 0 or conn.recv_data[16] != 0:
+            conn.send_command(command=0x41, value=0)
+
         return _get_connector().recv_data[14]
 
     def get_raw_color(self) -> Tuple[int, int, int]:
-        self._change_mode(3)
         conn = _get_connector()
 
-        return conn.recv_data[14], conn.recv_data[15], conn.recv_data[16]
+        if conn.recv_data[15] == 0 or conn.recv_data[16] == 0:
+            conn.send_command(command=0x41, value=3)
 
-    def _change_mode(self, mode: int) -> None:
-        if self.mode != mode:
-            _get_connector().send_command(command=0x41, value=mode)
-            self.mode = mode
+        red = max(conn.recv_data[14] - 1, 0)
+        green = max(conn.recv_data[15] - 1, 0)
+        blue = max(conn.recv_data[16] - 1, 0)
+
+        return red, green, blue
 
 
 class SonarSensor(object):
