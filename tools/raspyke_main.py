@@ -5,7 +5,9 @@ import ubinascii
 
 '''
 送信（観測）データ: Base64でエンコードした文字列を送受信する
-[0-1] magic number (0x7f, 0x7f)
+Base64でエンコードした文字列は 0x66, 0x33 で始まる
+[0-1] magic number (0x7f, 0x70) (12bit)
+[1] parity (4bit)
 [2-4] time
 [5-13] motor count (A, B, C) (3 bytes each)
 [14-16] one of ambient, color, reflect, rgb (r, g, b)
@@ -17,7 +19,8 @@ import ubinascii
   2: battery current
 
 受信（命令）データ: バイナリデータを送受信する
-[0-1] magic number (0x7f, 0x7f)
+[0] magic number (0x7f)
+[1] parity
 [2-2] command
 [3-6] value
 
@@ -250,7 +253,7 @@ class Device(object):
             system_value = 0
 
         send_buffer[0] = 0x7f
-        send_buffer[1] = 0x7f
+        send_buffer[1] = 0x70
         send_buffer[2:5] = int.to_bytes(process_time & 0xffffff, 3, 'big')
         send_buffer[5:8] = int.to_bytes(motor_a_count & 0xffffff, 3, 'big')
         send_buffer[8:11] = int.to_bytes(motor_b_count & 0xffffff, 3, 'big')
@@ -262,6 +265,12 @@ class Device(object):
         send_buffer[18:21] = int.to_bytes(gyro_value & 0xffffff, 3, 'big')
         send_buffer[21] = system_number & 0xff
         send_buffer[22:24] = int.to_bytes(system_value & 0xffff, 2, 'big')
+
+        parity = 0
+        for i in range(2, len(send_buffer)):
+            parity |= send_buffer[i]
+
+        send_buffer[1] |= (parity | parity >> 4) & 0xf
 
 
 class Communicator(object):
@@ -322,13 +331,11 @@ class Communicator(object):
             size += len(buffer)
 
         # マジックナンバーをチェックする
-        while self.recv_buffer[0] != MAGIC_NUMBER or self.recv_buffer[1] != MAGIC_NUMBER:
-            offset = -1
-
-            for i in range(2, size):
-                if self.recv_buffer[i] == MAGIC_NUMBER:
-                    offset = i
-                    break
+        while self.recv_buffer[0] != MAGIC_NUMBER:
+            try:
+                offset = self.recv_buffer.index()
+            except ValueError:
+                offset = -1
 
             if offset < 0:
                 return False
@@ -348,6 +355,14 @@ class Communicator(object):
                 self.recv_buffer[size + i] = buffer[i]
 
             size += len(buffer)
+
+        # パリティを確認する
+        parity = 0
+        for i in range(2, len(self.recv_buffer)):
+            parity |= self.recv_buffer[i]
+
+        if parity != self.recv_buffer[1]:
+            return False
 
         return True
 

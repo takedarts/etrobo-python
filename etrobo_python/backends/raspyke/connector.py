@@ -7,7 +7,9 @@ import serial
 
 '''
 送信（観測）データ: Base64でエンコードした文字列を送受信する
-[0-1] magic number (0x7f, 0x7f)
+Base64でエンコードした文字列は 0x66, 0x33 で始まる
+[0-1] magic number (0x7f, 0x70) (12bit)
+[1] parity (4bit)
 [2-4] time
 [5-13] motor count (A, B, C) (3 bytes each)
 [14-16] one of ambient, color, reflect, rgb (r, g, b)
@@ -19,7 +21,8 @@ import serial
   2: battery current
 
 受信（命令）データ: バイナリデータを送受信する
-[0-1] magic number (0x7f, 0x7f)
+[0] magic number (0x7f)
+[1] parity
 [2-3] command
 [3-6] value
 
@@ -141,6 +144,10 @@ class _Connector(object):
                 except UnicodeDecodeError:
                     continue
 
+                # パリティを確認する
+                if not self._is_valid_parity(data):
+                    continue
+
                 # 受信データを保存する
                 self.recv_data[:21] = data[:21]
 
@@ -152,20 +159,27 @@ class _Connector(object):
 
     def _recv_report(self, buffer: bytearray) -> bool:
         # 受信データを読み込む
-        size = self.serial.readinto(buffer)
+        buf = self.serial.read(len(buffer))
 
         # タイムアウト
-        if size < len(buffer):
+        if len(buf) != len(buffer):
             raise Exception('Connection is timeout.')
 
         # パケットの先頭を探す
-        while buffer[0] != 102 or buffer[1] != 51:
-            offset = buffer.find(102, 2, size)
+        # 最後に先頭のマジックナンバーが見つかった場合は読み込み処理を行い
+        # Base64のデコードやパリティにデータの確認を任せる
+        offset = 0
+        while offset < len(buf) - 1 and (buf[offset] != 102 or buf[offset + 1] != 51):
+            offset = buf.find(102, offset + 1)
             if offset < 0:
                 return False
 
-            buffer[:-offset] = buffer[offset:]
-            size -= offset
+        # パケットの内容をコピーする
+        size = 0
+        for v in buf[offset:]:
+            if (47 <= v <= 57 or 65 <= v <= 90 or 97 <= v <= 122 or v in (43, 61)):
+                buffer[size] = v
+                size += 1
 
         # 残りのデータを受信する
         while size < len(buffer):
@@ -173,10 +187,22 @@ class _Connector(object):
             if len(buf) < len(buffer) - size:
                 raise Exception('Connection is timeout')
 
-            buffer[size:] = buf
-            size += len(buf)
+            # パケットの内容をコピーする
+            for v in buf:
+                if (47 <= v <= 57 or 65 <= v <= 90 or 97 <= v <= 122 or v in (43, 61)):
+                    buffer[size] = v
+                    size += 1
 
         return True
+
+    def _is_valid_parity(self, buffer: bytes) -> bool:
+        parity = 0
+        for v in buffer[2:]:
+            parity |= v
+
+        parity = (parity | parity >> 4) & 0xf
+
+        return buffer[1] & 0xf == parity
 
     def _run_handler(self) -> None:
         previous_time = 0
@@ -204,9 +230,15 @@ class _Connector(object):
 
     def send_command(self, command: int, value: int) -> None:
         self.send_data[0] = 0x7f
-        self.send_data[1] = 0x7f
         self.send_data[2] = command
         self.send_data[3:7] = int.to_bytes(value & 0xffffffff, 4, 'big')
+
+        parity = 0
+        for v in self.send_data[2:]:
+            parity |= v
+
+        self.send_data[1] = parity
+
         self.serial.write(self.send_data)
 
 
