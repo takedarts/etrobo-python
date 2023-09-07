@@ -96,6 +96,7 @@ class _Connector(object):
         self.handler = handler
         self.interval = interval
         self.running = False
+        self.started = False
 
         self.recv_data = bytearray(27)
         self.send_data = bytearray(7)
@@ -114,6 +115,7 @@ class _Connector(object):
         )
 
         self.running = True
+        self.started = False
         receiver_thread.start()
         handler_thread.start()
 
@@ -123,6 +125,7 @@ class _Connector(object):
         except KeyboardInterrupt:
             print('Interrupted by keyboard.')
             self.running = False
+            self.started = False
             receiver_thread.join()
             handler_thread.join()
             self.send_command(command=0x11, value=0)
@@ -154,8 +157,12 @@ class _Connector(object):
                 if 0 <= data[21] < 3:
                     offset = 21 + data[21] * 2
                     self.recv_data[offset:offset + 2] = data[22:]
+
+                # 制御処理を開始する
+                self.started = True
         finally:
             self.running = False
+            self.started = False
 
     def _recv_report(self, buffer: bytearray) -> bool:
         # 受信データを読み込む
@@ -220,6 +227,10 @@ class _Connector(object):
                     time.sleep((next_time - current_time) * 0.001)
                     continue
 
+                # 観測データを受信できていない場合は何もしない
+                if not self.started:
+                    continue
+
                 # 制御処理を実行
                 previous_time = process_time
                 self.handler()
@@ -227,6 +238,7 @@ class _Connector(object):
             print('Stopped by handler.')
         finally:
             self.running = False
+            self.started = False
 
     def send_command(self, command: int, value: int) -> None:
         self.send_data[0] = 0x7f
