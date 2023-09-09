@@ -56,7 +56,7 @@ def play_beep_sound(freq: float, duration: float, volume: float) -> None:
     sound.play()
 
 
-class Hub(object):
+class Hub(etrobo_python.Hub):
     def __init__(self):
         self.hub = connector.Hub()
         self.volume = 1.0

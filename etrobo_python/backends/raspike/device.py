@@ -33,7 +33,7 @@ def get_raspike_port(port: str) -> int:
         raise Exception(f'Unknown port: {port}')
 
 
-class Hub(object):
+class Hub(etrobo_python.Hub):
     def __init__(self):
         self.hub = connector.Hub()
 

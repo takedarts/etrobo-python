@@ -44,7 +44,7 @@ def get_ev3_port(port: str) -> Port:
         raise Exception('Unknown port: {}'.format(port))
 
 
-class Hub(object):
+class Hub(etrobo_python.Hub):
     def __init__(self) -> None:
         self.ev3brick = hubs.EV3Brick()
 
