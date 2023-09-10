@@ -1,3 +1,5 @@
+import argparse
+
 from etrobo_python import ColorSensor, ETRobo, Motor, TouchSensor
 
 
@@ -40,4 +42,7 @@ def run(backend: str, target: int, power: int, pid_p: float, **kwargs) -> None:
 
 
 if __name__ == '__main__':
-    run(backend='simulator', target=20, power=70, pid_p=1.8)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--logfile', type=str, default=None, help='Path to log file')
+    args = parser.parse_args()
+    run(backend='simulator', target=20, power=70, pid_p=1.8, logfile=args.logfile)

@@ -4,6 +4,8 @@
 上ボタンを押す：前進する
 下ボタンを押す：後退する
 '''
+import argparse
+
 from etrobo_python import ETRobo, Hub, Motor
 
 MOTOR_POWER = 50
@@ -38,4 +40,7 @@ def run(backend: str, **kwargs) -> None:
 
 
 if __name__ == '__main__':
-    run(backend='simulator')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--logfile', type=str, default=None, help='Path to log file')
+    args = parser.parse_args()
+    run(backend='simulator', logfile=args.logfile)
