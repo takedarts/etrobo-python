@@ -4,7 +4,12 @@ except BaseException:
     pass
 
 
-class Hub(object):
+class Device(object):
+    def get_log(self) -> bytes:
+        raise NotImplementedError()
+
+
+class Hub(Device):
     def set_led(self, color: str) -> None:
         '''LEDの発光色を設定する。
         発光色の名前は black, red, green, orange のいずれか。
@@ -95,10 +100,6 @@ class Hub(object):
             下ボタンの状態。
         '''
         raise NotImplementedError()
-
-
-class Device(object):
-    pass
 
 
 class Motor(Device):
