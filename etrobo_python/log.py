@@ -1,15 +1,18 @@
-import pickle
-from pathlib import Path
-from typing import List, Optional, Tuple, Union
-
 from etrobo_python.device import (ColorSensor, Device, GyroSensor, Hub, Motor, SonarSensor,
                                   TouchSensor)
+
+try:
+    from pathlib import Path
+    from typing import List, Optional, Tuple, Union
+except BaseException:
+    pass
+
 
 '''
 ログファイルのフォーマット
 ------------------------
 - デバイスのリストのバイナリの長さ(2バイト)
-- pickleでシリアライズされたデバイスのリスト(変数名, デバイスタイプ)
+- デバイスのリストのUTF-8文字列(変数名1:デバイスタイプ1,変数名2:デバイスタイプ2,...)
 - 以下、それぞれのデバイスから取得されたデータを時刻順に並べたもの
   -  Hub: 時刻(4バイト), ボタンの状態(1バイト)
     - ボタンの状態: 左ボタン: 0x01, 右ボタン: 0x02, 上ボタン: 0x04, 下ボタン: 0x08
@@ -21,7 +24,7 @@ from etrobo_python.device import (ColorSensor, Device, GyroSensor, Hub, Motor, S
 
 [例] left_motor:motor, right_motor:motor, color_sensor:color_sensorの場合
 デバイスリストのバイナリの大きさ
-各デバイスの変数名とデバイスタイプをpickleでシリアライズしたバイナリデータ
+各デバイスの変数名とデバイスタイプの一覧を表すUTF-8文字列
 (left_motorの回転角度, right_motorの回転角度, color_sensorのbrightness, ambient, raw_color)
 (left_motorの回転角度, right_motorの回転角度, color_sensorのbrightness, ambient, raw_color)
 (left_motorの回転角度, right_motorの回転角度, color_sensorのbrightness, ambient, raw_color)
@@ -69,9 +72,12 @@ class LogReader(object):
 
         self.reader = open(self.path, 'rb')
         size = int.from_bytes(self.reader.read(2), 'big')
-        self.devices: List[Tuple[str, str]] = pickle.loads(self.reader.read(size))
 
-        lengths = [_get_binary_length(type_name) for _, type_name in self.devices]
+        tokens = self.reader.read(size).decode('utf-8').split(',')
+        name_types = [token.split(':') for token in tokens]
+        self.devices = [(name, device_type) for name, device_type in name_types]
+
+        lengths = [_get_binary_length(device_type) for _, device_type in self.devices]
         self.offsets = [sum(lengths[:i]) for i in range(len(lengths) + 1)]
 
     def __enter__(self):
@@ -113,14 +119,15 @@ class LogWriter(object):
         self.path = str(path)
         self.writer = open(self.path, 'wb')
 
-        type_names = [_get_type_name(device) for _, device in devices]
-        lengths = [_get_binary_length(type_name) for type_name in type_names]
+        device_types = [_get_type_name(device) for _, device in devices]
+        lengths = [_get_binary_length(device_type) for device_type in device_types]
         self.offsets = [sum(lengths[:i]) for i in range(len(lengths) + 1)]
         self.buffer = bytearray(sum(lengths))
 
-        bin = pickle.dumps([(name, _get_type_name(device)) for name, device in devices])
-        self.writer.write(int.to_bytes(len(bin), 2, 'big'))
-        self.writer.write(bin)
+        name_types = ['{}:{}'.format(name, _get_type_name(device)) for name, device in devices]
+        binary = ','.join(name_types).encode('utf-8')
+        self.writer.write(int.to_bytes(len(binary), 2, 'big'))
+        self.writer.write(binary)
 
     def __enter__(self):
         return self
@@ -130,8 +137,8 @@ class LogWriter(object):
 
     def write(self, devices: List[Device]) -> None:
         for offset, device in zip(self.offsets, devices):
-            bin: bytes = device.get_log()
-            self.buffer[offset:offset + len(bin)] = bin
+            binary = device.get_log()
+            self.buffer[offset:offset + len(binary)] = binary
 
         self.writer.write(self.buffer)
 
