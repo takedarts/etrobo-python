@@ -47,6 +47,7 @@ def get_ev3_port(port: str) -> Port:
 class Hub(etrobo_python.Hub):
     def __init__(self) -> None:
         self.ev3brick = hubs.EV3Brick()
+        self.base_time = time.time()
         self.log = bytearray(5)
 
     def set_led(self, color: str) -> None:
@@ -61,7 +62,7 @@ class Hub(etrobo_python.Hub):
             self.ev3brick.light.on(Color.BLACK)
 
     def get_time(self) -> float:
-        return time.time()
+        return time.time() - self.base_time
 
     def get_battery_voltage(self) -> int:
         return self.ev3brick.battery.voltage()
