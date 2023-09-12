@@ -35,6 +35,7 @@ def get_raspike_port(port: str) -> int:
 class Hub(etrobo_python.Hub):
     def __init__(self):
         self.hub = connector.Hub()
+        self.log = bytearray(5)
 
     def set_led(self, color: str) -> None:
         if color.startswith('bla'):  # black
@@ -83,10 +84,20 @@ class Hub(etrobo_python.Hub):
     def is_down_button_pressed(self) -> bool:
         return False
 
+    def get_log(self) -> bytes:
+        self.log[:4] = int.to_bytes(int(self.get_time() * 1000), 4, 'big')
+        self.log[4] = (
+            int(self.is_left_button_pressed())
+            | int(self.is_right_button_pressed()) << 1
+        )
+
+        return self.log
+
 
 class Motor(etrobo_python.Motor):
     def __init__(self, port: int) -> None:
         self.motor = connector.Motor(port)
+        self.log = bytearray(4)
 
     def get_count(self) -> int:
         return self.motor.get_count()
@@ -100,32 +111,63 @@ class Motor(etrobo_python.Motor):
     def set_brake(self, brake: bool) -> None:
         self.motor.set_brake(brake)
 
+    def get_log(self) -> bytes:
+        self.log[:] = int.to_bytes(self.get_count(), 4, 'big', signed=True)
+        return self.log
+
 
 class ColorSensor(etrobo_python.ColorSensor):
     def __init__(self) -> None:
         self.color_sensor = connector.ColorSensor()
+        self.mode = -1
+        self.log = bytearray(5)
 
     def get_brightness(self) -> int:
+        self.mode = 0
         return self.color_sensor.get_brightness()
 
     def get_ambient(self) -> int:
+        self.mode = 1
         return self.color_sensor.get_ambient()
 
     def get_raw_color(self) -> Tuple[int, int, int]:
+        self.mode = 2
         return self.color_sensor.get_raw_color()
+
+    def get_log(self) -> bytes:
+        if self.mode == 0:
+            self.log[0] = self.get_brightness()
+            self.log[1] = 0
+            self.log[2], self.log[3], self.log[4] = 0, 0, 0
+        elif self.mode == 1:
+            self.log[0] = 0
+            self.log[1] = self.get_ambient()
+            self.log[2], self.log[3], self.log[4] = 0, 0, 0
+        elif self.mode == 2:
+            self.log[0] = 0
+            self.log[1] = 0
+            self.log[2], self.log[3], self.log[4] = self.get_raw_color()
+
+        return self.log
 
 
 class TouchSensor(etrobo_python.TouchSensor):
     def __init__(self):
         self.hub = connector.Hub()
+        self.log = bytearray(1)
 
     def is_pressed(self) -> bool:
         return (self.hub.get_button_pressed() & 0x01) != 0
+
+    def get_log(self) -> bytes:
+        self.log[0] = int(self.is_pressed())
+        return self.log
 
 
 class SonarSensor(etrobo_python.SonarSensor):
     def __init__(self) -> None:
         self.sonar_sensor = connector.SonarSensor()
+        self.log = bytearray(2)
 
     def listen(self) -> bool:
         return self.sonar_sensor.listen()
@@ -133,10 +175,15 @@ class SonarSensor(etrobo_python.SonarSensor):
     def get_distance(self) -> int:
         return self.sonar_sensor.get_distance()
 
+    def get_log(self) -> bytes:
+        self.log[:] = int.to_bytes(self.get_distance(), 2, 'big')
+        return self.log
+
 
 class GyroSensor(etrobo_python.GyroSensor):
     def __init__(self) -> None:
         self.gyro_sensor = connector.GyroSensor()
+        self.log = bytearray(4)
 
     def reset(self) -> None:
         self.gyro_sensor.reset()
@@ -146,3 +193,8 @@ class GyroSensor(etrobo_python.GyroSensor):
 
     def get_angler_velocity(self) -> int:
         return self.gyro_sensor.get_angler_velocity()
+
+    def get_log(self) -> bytes:
+        self.log[:2] = int.to_bytes(self.get_angle(), 2, 'big', signed=True)
+        self.log[2:] = int.to_bytes(self.get_angler_velocity(), 2, 'big', signed=True)
+        return self.log
