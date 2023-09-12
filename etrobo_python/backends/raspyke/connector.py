@@ -1,6 +1,4 @@
 import base64
-import threading
-import time
 from typing import Callable, Optional, Tuple
 
 import serial
@@ -27,10 +25,11 @@ Base64でエンコードした文字列は 0x66, 0x33 で始まる
 [3-6] value
 
 command: number - value
-0x00: sleep - time (milli seconds)
+0x00: ping - time reset (1byte), interval (milli seconds) (3bytes)
 0x01: sound - frequency (Hz), duration (milli seconds) (2bytes each)
 0x02: volume - volume (0-10)
 0x03: led - number (0-20)
+0x04: screen - number (0-20)
 0x11: motor A power - power
 0x12: motor A brake - 0/1
 0x13: motor A reset - 0
@@ -95,81 +94,60 @@ class _Connector(object):
     ) -> None:
         self.handler = handler
         self.interval = interval
-        self.running = False
         self.started = False
 
+        # 受信バッファ
+        self.recv_buffer = bytearray(32)
+        # 受信データ
         self.recv_data = bytearray(27)
+        # 送信データ
         self.send_data = bytearray(7)
 
+        # シリアル通信オブジェクト
         self.serial = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
 
     def run(self) -> None:
-        receiver_thread = threading.Thread(
-            target=self._run_receiver,
-            name='RasPike_run_receiver',
-        )
+        # シリアル通信のバッファを空にする
+        self.serial.reset_input_buffer()
 
-        handler_thread = threading.Thread(
-            target=self._run_handler,
-            name='RasPike_run_handler',
-        )
-
-        self.running = True
-        self.started = False
-        receiver_thread.start()
-        handler_thread.start()
+        # リセットコマンドを送信する
+        self.send_ping_command(reset=True)
 
         try:
-            receiver_thread.join()
-            handler_thread.join()
+            while True:
+                # 受信データを読み込む
+                if not self._recv_report():
+                    continue
+
+                # 受信データの時刻を取得する
+                report_time = int.from_bytes(self.recv_data[2:5], 'big')
+
+                # 最初に受信したデータの時刻が1000よりも大きい場合はリセットコマンドを再送信する
+                if not self.started:
+                    if report_time > 1000:
+                        self.send_ping_command(reset=True)
+                        continue
+                    else:
+                        self.started = True
+
+                # pingコマンドを送信する
+                self.send_ping_command(reset=False)
+
+                # 制御処理を実行する
+                self.handler()
         except KeyboardInterrupt:
             print('Interrupted by keyboard.')
-            self.running = False
-            self.started = False
-            receiver_thread.join()
-            handler_thread.join()
+        finally:
             self.send_command(command=0x11, value=0)
             self.send_command(command=0x21, value=0)
             self.send_command(command=0x31, value=0)
 
-    def _run_receiver(self) -> None:
-        buffer = bytearray(32)
-
-        try:
-            while self.running:
-                # 受信データを読み込む
-                if not self._recv_report(buffer):
-                    continue
-
-                # base64の文字列をデコードしてデータを取得する
-                try:
-                    data = base64.b64decode(buffer.decode('ascii'))
-                except UnicodeDecodeError:
-                    continue
-
-                # パリティを確認する
-                if not self._is_valid_parity(data):
-                    continue
-
-                # 受信データを保存する
-                self.recv_data[:21] = data[:21]
-
-                if 0 <= data[21] < 3:
-                    offset = 21 + data[21] * 2
-                    self.recv_data[offset:offset + 2] = data[22:]
-
-                # 制御処理を開始する
-                self.started = True
-        finally:
-            self.running = False
-            self.started = False
-
-    def _recv_report(self, buffer: bytearray) -> bool:
+    def _recv_report(self) -> bool:
         # 受信データを読み込む
-        buf = self.serial.read(len(buffer))
+        buf = self.serial.read(len(self.recv_buffer))
 
         # タイムアウト
-        if len(buf) != len(buffer):
+        if len(buf) != len(self.recv_buffer):
             raise Exception('Connection is timeout.')
 
         # パケットの先頭を探す
@@ -185,20 +163,37 @@ class _Connector(object):
         size = 0
         for v in buf[offset:]:
             if (47 <= v <= 57 or 65 <= v <= 90 or 97 <= v <= 122 or v in (43, 61)):
-                buffer[size] = v
+                self.recv_buffer[size] = v
                 size += 1
 
         # 残りのデータを受信する
-        while size < len(buffer):
-            buf = self.serial.read(len(buffer) - size)
-            if len(buf) < len(buffer) - size:
+        while size < len(self.recv_buffer):
+            buf = self.serial.read(len(self.recv_buffer) - size)
+            if len(buf) < len(self.recv_buffer) - size:
                 raise Exception('Connection is timeout')
 
             # パケットの内容をコピーする
             for v in buf:
                 if (47 <= v <= 57 or 65 <= v <= 90 or 97 <= v <= 122 or v in (43, 61)):
-                    buffer[size] = v
+                    self.recv_buffer[size] = v
                     size += 1
+
+        # base64の文字列をデコードしてデータを取得する
+        try:
+            data = base64.b64decode(self.recv_buffer.decode('ascii'))
+        except UnicodeDecodeError:
+            return False
+
+        # パリティを確認する
+        if not self._is_valid_parity(data):
+            return False
+
+        # 受信データを保存する
+        self.recv_data[:21] = data[:21]
+
+        if 0 <= data[21] < 3:
+            offset = 21 + data[21] * 2
+            self.recv_data[offset:offset + 2] = data[22:]
 
         return True
 
@@ -211,35 +206,6 @@ class _Connector(object):
 
         return buffer[1] & 0xf == parity
 
-    def _run_handler(self) -> None:
-        previous_time = 0
-
-        try:
-            while self.running:
-                # 時刻を確認する
-                interval_time = int(self.interval * 1000)
-                current_time = int(time.time() * 1000)
-                process_time = (current_time // interval_time) * interval_time
-
-                # 前回の時刻との間隔が設定値より短いなら待機する
-                if process_time == previous_time:
-                    next_time = previous_time + interval_time
-                    time.sleep((next_time - current_time) * 0.001)
-                    continue
-
-                # 観測データを受信できていない場合は何もしない
-                if not self.started:
-                    continue
-
-                # 制御処理を実行
-                previous_time = process_time
-                self.handler()
-        except StopIteration:
-            print('Stopped by handler.')
-        finally:
-            self.running = False
-            self.started = False
-
     def send_command(self, command: int, value: int) -> None:
         self.send_data[0] = 0x7f
         self.send_data[2] = command
@@ -250,8 +216,11 @@ class _Connector(object):
             parity |= v
 
         self.send_data[1] = parity
-
         self.serial.write(self.send_data)
+
+    def send_ping_command(self, reset: bool) -> None:
+        value = int(reset) << 24 | int(self.interval * 1000) & 0xffffff
+        self.send_command(command=0x00, value=value)
 
 
 class Hub(object):

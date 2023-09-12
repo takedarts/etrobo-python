@@ -25,7 +25,7 @@ Base64でエンコードした文字列は 0x66, 0x33 で始まる
 [3-6] value
 
 command: number - value
-0x00: sleep - time (milli seconds)
+0x00: ping - time reset (1byte), interval (milli seconds) (3bytes)
 0x01: sound - frequency (Hz), duration (milli seconds) (2bytes each)
 0x02: volume - volume (0-10)
 0x03: led - color (0-10)
@@ -51,10 +51,13 @@ PORT_COLOR_SENSOR = 'C'
 PORT_ULTRASONIC_SENSOR = 'F'
 PORT_SERIAL = 'D'
 
-# モーターの回転を逆にして指定したい場合、以下に-1を設定してください
+# モーターの回転を逆にして指定したい場合、以下に-1を設定する
 INVERT_MOTOR_A = 1
 INVERT_MOTOR_B = 1
 INVERT_MOTOR_C = -1
+
+# タイムアウト時間（ミリ秒）
+TIMEOUT_MS = 1000
 
 # 送受信データに含まれるマジックナンバー
 MAGIC_NUMBER = 0x7f
@@ -191,9 +194,6 @@ class Device(object):
         self.color_sensor = ColorSensor(getattr(hub.port, PORT_COLOR_SENSOR))
         self.ultrasonic_sensor = UltrasonicSensor(getattr(hub.port, PORT_ULTRASONIC_SENSOR))
 
-        # 基準時間を保存する
-        self.ticks_base = utime.ticks_ms()
-
     def execute(self, command, value):
         if command == 0x00:
             utime.sleep_ms(value)
@@ -230,8 +230,8 @@ class Device(object):
         elif command == 0x51:
             hub.motion.yaw_pitch_roll(0)
 
-    def apply(self, send_buffer, system_number):
-        process_time = utime.ticks_ms() - self.ticks_base
+    def apply(self, send_buffer, report_number, current_time):
+        process_time = current_time
         motor_a_count = self.motor_a.get_count()
         motor_b_count = self.motor_b.get_count()
         motor_c_count = self.motor_c.get_count()
@@ -241,19 +241,19 @@ class Device(object):
         gyro_speed = hub.motion.gyroscope()[2]
         gyro_value = (gyro_angle & 0xfff) << 12 | gyro_speed & 0xfff
 
-        if system_number == 0:
-            system_value = (
+        if report_number == 0:
+            report_value = (
                 int(hub.button.connect.is_pressed()) << 0
                 | int(hub.button.left.is_pressed()) << 1
                 | int(hub.button.right.is_pressed()) << 2
                 | int(hub.button.center.is_pressed()) << 3
             )
-        elif system_number == 1:
-            system_value = hub.battery.voltage()
-        elif system_number == 2:
-            system_value = hub.battery.current()
+        elif report_number == 1:
+            report_value = hub.battery.voltage()
+        elif report_number == 2:
+            report_value = hub.battery.current()
         else:
-            system_value = 0
+            report_value = 0
 
         send_buffer[0] = 0x7f
         send_buffer[1] = 0x70
@@ -266,8 +266,8 @@ class Device(object):
         send_buffer[16] = color2 & 0xff
         send_buffer[17] = ultrasonic & 0xff
         send_buffer[18:21] = int.to_bytes(gyro_value & 0xffffff, 3, 'big')
-        send_buffer[21] = system_number & 0xff
-        send_buffer[22:24] = int.to_bytes(system_value & 0xffff, 2, 'big')
+        send_buffer[21] = report_number & 0xff
+        send_buffer[22:24] = int.to_bytes(report_value & 0xffff, 2, 'big')
 
         parity = 0
         for i in range(2, len(send_buffer)):
@@ -293,28 +293,60 @@ class Communicator(object):
         while self.serial.read(self.recv_buffer) != 0:
             pass
 
+        # 基準時間
+        self.base_time = 0
+        # 最後に命令データを受信した時間
+        self.receive_time = 0
+
+        # 観測データを送信する間隔（ミリ秒）
+        self.report_intereval = 10
         # 最後に観測データを送信した時間
-        self.last_report_time = 0
-        # 観測データを送信した回数
-        self.report_count = 0
+        self.report_time = 0
+        # 観測データとして送信する番号
+        self.report_number = 0
 
     def communicate(self, device):
         while True:
+            # 切断中なら0.5秒間スリープする
+            if self.base_time == 0:
+                utime.sleep_ms(500)
+
+            # 現在時刻を取得する
+            current_time = utime.ticks_ms()
+
             # 命令データを受信する
             if self._receive():
+                self.receive_time = current_time
+
+                # 命令番号と値を取り出す
                 command = self.recv_buffer[2]
                 value = int.from_bytes(self.recv_buffer[3:7], 'big')
                 if value >= 0x80000000:
                     value -= 0x100000000
-                device.execute(command, value)
+
+                # PING命令を受信した場合
+                if command == 0x00:
+                    self.report_intereval = value & 0xffffff
+                    if value >> 24 == 0x01:
+                        self.base_time = current_time
+                        hub.display.show(hub.Image.CHESSBOARD)
+                # それ以外の命令を受信した場合はその命令を実行する
+                else:
+                    device.execute(command, value)
+
+                # 次の命令を受信する（命令の受信を優先する）
                 continue
 
+            # 最後に命令データを受信してから一定時間経過していたら切断状態にする
+            if current_time - self.receive_time >= TIMEOUT_MS:
+                self.base_time = 0
+                hub.display.show(hub.Image.SQUARE_SMALL)
+
             # 観測データを送信する
-            current_time = utime.ticks_ms()
-            if current_time - self.last_report_time >= 10:
-                self.last_report_time = current_time
-                self.report_count += 1
-                device.apply(self.send_buffer, self.report_count % 3)
+            if current_time - self.report_time >= self.report_intereval:
+                self.report_time = current_time
+                self.report_number = (self.report_number + 1) % 3
+                device.apply(self.send_buffer, self.report_number, current_time - self.base_time)
                 self._send()
 
     def _receive(self):
@@ -390,8 +422,8 @@ def main():
     device = Device()
     communicator = Communicator()
 
-    # チェスボードを表示する
-    hub.display.show(hub.Image.CHESSBOARD)
+    # 四角形を表示する
+    hub.display.show(hub.Image.SQUARE_SMALL)
 
     # メインループ
     communicator.communicate(device)
