@@ -1,6 +1,6 @@
 import argparse
 
-from etrobo_python import ColorSensor, ETRobo, Motor, TouchSensor
+from etrobo_python import ColorSensor, ETRobo, Hub, Motor, TouchSensor
 
 
 class LineTracer(object):
@@ -12,27 +12,35 @@ class LineTracer(object):
 
     def __call__(
         self,
+        hub: Hub,
         right_motor: Motor,
         left_motor: Motor,
         touch_sensor: TouchSensor,
         color_sensor: ColorSensor,
     ) -> None:
-        if touch_sensor.is_pressed():
+        if not self.running and (
+                touch_sensor.is_pressed()
+                or hub.is_left_button_pressed()
+                or hub.is_right_button_pressed()):
             self.running = True
 
         if not self.running:
             return
 
         brightness = color_sensor.get_brightness() - self.target
-        right_power = round(self.power + self.pid_p * brightness)
-        left_power = round(self.power - self.pid_p * brightness)
+        power_ratio = self.pid_p * brightness
 
-        right_motor.set_power(right_power)
-        left_motor.set_power(left_power)
+        if power_ratio > 0:
+            right_motor.set_power(self.power)
+            left_motor.set_power(int(self.power / (1 + power_ratio)))
+        else:
+            right_motor.set_power(int(self.power / (1 - power_ratio)))
+            left_motor.set_power(self.power)
 
 
 def run(backend: str, target: int, power: int, pid_p: float, **kwargs) -> None:
     (ETRobo(backend=backend)
+     .add_hub('hub')
      .add_device('right_motor', device_type=Motor, port='B')
      .add_device('left_motor', device_type=Motor, port='C')
      .add_device('touch_sensor', device_type=TouchSensor, port='1')
@@ -45,4 +53,4 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--logfile', type=str, default=None, help='Path to log file')
     args = parser.parse_args()
-    run(backend='simulator', target=20, power=70, pid_p=1.8, logfile=args.logfile)
+    run(backend='simulator', target=17, power=50, pid_p=0.2, logfile=args.logfile)
