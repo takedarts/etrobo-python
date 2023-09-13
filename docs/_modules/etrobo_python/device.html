@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>etrobo_python.device &mdash; etrobo-python 0.4 documentation</title>
+  <title>etrobo_python.device &mdash; etrobo-python 0.5 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -70,7 +70,12 @@
     <span class="k">pass</span>
 
 
-<div class="viewcode-block" id="Hub"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub">[docs]</a><span class="k">class</span> <span class="nc">Hub</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Device"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Device">[docs]</a><span class="k">class</span> <span class="nc">Device</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Device.get_log"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Device.get_log">[docs]</a>    <span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="Hub"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub">[docs]</a><span class="k">class</span> <span class="nc">Hub</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
 <div class="viewcode-block" id="Hub.set_led"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.set_led">[docs]</a>    <span class="k">def</span> <span class="nf">set_led</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&#39;&#39;&#39;LEDの発光色を設定する。</span>
 <span class="sd">        発光色の名前は black, red, green, orange のいずれか。</span>
@@ -161,10 +166,6 @@
 <span class="sd">            下ボタンの状態。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
-
-
-<div class="viewcode-block" id="Device"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Device">[docs]</a><span class="k">class</span> <span class="nc">Device</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="Motor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor">[docs]</a><span class="k">class</span> <span class="nc">Motor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>

@@ -20,6 +20,14 @@ etrobo\_python.etrobo module
    :undoc-members:
    :show-inheritance:
 
+etrobo\_python.log module
+-------------------------
+
+.. automodule:: etrobo_python.log
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
