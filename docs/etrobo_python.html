@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>etrobo_python package &mdash; etrobo-python 0.4 documentation</title>
+  <title>etrobo_python package &mdash; etrobo-python 0.5 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -42,6 +42,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-etrobo_python.device">etrobo_python.device module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-etrobo_python.etrobo">etrobo_python.etrobo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-etrobo_python.log">etrobo_python.log module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-etrobo_python">Module contents</a></li>
 </ul>
 </li>
@@ -121,6 +122,11 @@
 <dt class="sig sig-object py" id="etrobo_python.device.Device">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">etrobo_python.device.</span></span><span class="sig-name descname"><span class="pre">Device</span></span><a class="reference internal" href="_modules/etrobo_python/device.html#Device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.device.Device" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="etrobo_python.device.Device.get_log">
+<span class="sig-name descname"><span class="pre">get_log</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="_modules/etrobo_python/device.html#Device.get_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.device.Device.get_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -160,7 +166,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="etrobo_python.device.Hub">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">etrobo_python.device.</span></span><span class="sig-name descname"><span class="pre">Hub</span></span><a class="reference internal" href="_modules/etrobo_python/device.html#Hub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.device.Hub" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#etrobo_python.device.Device" title="etrobo_python.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">etrobo_python.device.Device</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="etrobo_python.device.Hub.get_battery_current">
 <span class="sig-name descname"><span class="pre">get_battery_current</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/etrobo_python/device.html#Hub.get_battery_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.device.Hub.get_battery_current" title="Permalink to this definition">¶</a></dt>
@@ -389,7 +395,8 @@
 <ul class="simple">
 <li><p>simulator: Unityのシミュレータ環境でのロボット制御</p></li>
 <li><p>pybricks: micropythonを使ったEV3ロボットの制御</p></li>
-<li><p>raspike: micropythonを使ったRasPikeロボットの制御（未実装）</p></li>
+<li><p>raspike: pythonを使ったRasPikeロボットの制御（公式のmain.pyを使用する場合）</p></li>
+<li><p>raspyke: pythonを使ったRasPikeロボットの制御（非公式のmain.pyを使用する場合）</p></li>
 </ul>
 <p><strong>プログラム例</strong></p>
 <p>制御対象としてHUBタイプのデバイス「body」とmotorタイプのデバイス「motor1」を登録した場合、
@@ -474,17 +481,130 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="etrobo_python.etrobo.ETRobo.dispatch">
-<span class="sig-name descname"><span class="pre">dispatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#etrobo_python.etrobo.ETRobo" title="etrobo_python.etrobo.ETRobo"><span class="pre">etrobo_python.etrobo.ETRobo</span></a></span></span><a class="reference internal" href="_modules/etrobo_python/etrobo.html#ETRobo.dispatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.etrobo.ETRobo.dispatch" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">dispatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#etrobo_python.etrobo.ETRobo" title="etrobo_python.etrobo.ETRobo"><span class="pre">etrobo_python.etrobo.ETRobo</span></a></span></span><a class="reference internal" href="_modules/etrobo_python/etrobo.html#ETRobo.dispatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.etrobo.ETRobo.dispatch" title="Permalink to this definition">¶</a></dt>
 <dd><p>制御プログラムを実行する。</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>interval</strong> – 制御ハンドラの実行間隔</p></li>
+<li><p><strong>logfile</strong> – ログデータを保存するファイルのパス</p></li>
 <li><p><strong>kwargs</strong> – バックエンドプログラムに渡される引数</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>このオブジェクト</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-etrobo_python.log">
+<span id="etrobo-python-log-module"></span><h2>etrobo_python.log module<a class="headerlink" href="#module-etrobo_python.log" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="etrobo_python.log.LogReader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">etrobo_python.log.</span></span><span class="sig-name descname"><span class="pre">LogReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etrobo_python/log.html#LogReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.log.LogReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>ログデータをファイルから読み込むためのクラス。
+LogWriterで作成されたログファイルを読み込み、デバイスごとに分割したデータを取得する。</p>
+<p>ログファイルのフォーマットについては、LogWriterの説明を参照。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – ログファイルのパス</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="etrobo_python.log.LogReader.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/etrobo_python/log.html#LogReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.log.LogReader.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>ログファイルを閉じる。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="etrobo_python.log.LogReader.get_devices">
+<span class="sig-name descname"><span class="pre">get_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/etrobo_python/log.html#LogReader.get_devices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.log.LogReader.get_devices" title="Permalink to this definition">¶</a></dt>
+<dd><p>ログファイルに記録されているデバイスのリストを取得する。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>デバイスのリスト。
+デバイスは(変数名, デバイスタイプ)のタプルで表現される。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="etrobo_python.log.LogReader.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/etrobo_python/log.html#LogReader.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.log.LogReader.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>ログファイルからデバイスごとに分割したデータを取得する。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>デバイスごとに分割したデータのリスト。
+デバイスのリストの順番はget_devices()で取得したものと同じ。
+ログデータが壊れている（と思われる）場合はNoneを返す。</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="etrobo_python.log.LogWriter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">etrobo_python.log.</span></span><span class="sig-name descname"><span class="pre">LogWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#etrobo_python.device.Device" title="etrobo_python.device.Device"><span class="pre">etrobo_python.device.Device</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/etrobo_python/log.html#LogWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.log.LogWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>ログデータをファイルに書き込むためのクラス。
+モータやセンサから取得したデータをログファイルに書き込む。</p>
+<p><strong>ログファイルのフォーマット</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>デバイスのリストの文字列のバイト数(2バイト)
+デバイスのリストのUTF-8文字列(変数名1:デバイスタイプ1,変数名2:デバイスタイプ2,...)
+以下、それぞれのデバイスから取得されたデータを時刻順に並べたもの
+  - Hub: 時刻(4バイト), ボタンの状態(1バイト)
+    ボタンの状態: 左ボタン=0x01, 右ボタン=0x02, 上ボタン=0x04, 下ボタン=0x08
+  - Motor: モーターの回転角度(4バイト)
+  - ColorSensor: brightness(1バイト), ambient(1バイト), raw_color(1バイト * 3)
+  - TouchSensor: タッチセンサの状態(1バイト)
+  - SonarSensor: 距離(2バイト)
+  - GyroSensor: 角度(2バイト), 角速度(2バイト)
+</pre></div>
+</div>
+<p><strong>ログデータの例</strong></p>
+<p>ログデータの取得対象となるデバイスがleft_motor:motor・right_motor:motor・color_sensor:color_sensorの場合、
+以下のログデータが作成される。</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>0x003c (デバイスリストの文字列のバイト数)
+&quot;left_motor:motor,right_motor:motor,color_sensor:color_sensor&quot; (UTF-8文字列)
+(left_motorの回転角度, right_motorの回転角度, color_sensorのbrightness, ambient, raw_color)
+(left_motorの回転角度, right_motorの回転角度, color_sensorのbrightness, ambient, raw_color)
+(left_motorの回転角度, right_motorの回転角度, color_sensorのbrightness, ambient, raw_color)
+...
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – ログファイルのパス</p></li>
+<li><p><strong>devices</strong> – ログファイルに記録するデバイスのリスト。
+デバイスは(変数名, デバイスオブジェクト)のタプルで指定する。</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="etrobo_python.log.LogWriter.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/etrobo_python/log.html#LogWriter.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.log.LogWriter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>ログファイルを閉じる。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="etrobo_python.log.LogWriter.flush">
+<span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/etrobo_python/log.html#LogWriter.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.log.LogWriter.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>ログファイルに書き込みバッファの内容を書き込む。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="etrobo_python.log.LogWriter.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#etrobo_python.device.Device" title="etrobo_python.device.Device"><span class="pre">etrobo_python.device.Device</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/etrobo_python/log.html#LogWriter.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.log.LogWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>デバイスから取得したデータをログファイルに書き込む。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>devices</strong> – ログファイルに記録するデバイスのリスト。</p>
 </dd>
 </dl>
 </dd></dl>

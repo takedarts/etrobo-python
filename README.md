@@ -1,12 +1,21 @@
 ## ETロボコン2023のためのpythonミドルウェア
+このミドルウェアは以下の環境で動作するプログラムの開発をサポートします。
 
-**[注意] Version 0.4のみRasPikeのモーターの回転方向が逆に設定されています。**
+- Similator環境: シミュレータ上のロボットを制御するプログラムを開発できます。
+- RasPike環境: 実機SPIKEを制御するプログラムを開発できます。
+- RasPyke環境: 実機SPIKEを制御するプログラムを開発できます。
+- Pybricks環境: 実機EV3を制御するプログラムを開発できます。
+
+上記の環境でロボットの制御に必要となる手続きを共通のAPIとして実装していますので、上記のすべての環境で同様に動作するプログラムを開発することが可能です。ただし、制御パラメータの基準値はそれぞれの環境で異なりますので、それぞれの環境ごとにパラメータチューニングが必要となります。
+
+RasPike環境とRasPyke環境は、どちらも実機SPIKEを制御するプログラムを開発できますが、SPIKEのPrime Hubを制御するプログラムが異なります。RasPike環境ではETロボコン公式のPrime Hub制御プログラムを使用しますが、RasPyke環境では独自実装のPrime Hub制御プログラムを使用します。詳細は[RasPyke環境(SPIKE)でのプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-raspyke)を参照してください。
 
 ### インストール方法
 - [Windows環境でのインストール方法とプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-windows)
 - [MacOSX環境でのインストール方法とプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-macosx)
-- [RasPike(実機)でのプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-raspike)
-- [EV3(実機)でのプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-ev3)
+- [RasPike環境(SPIKE)でのプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-raspike)
+- [RasPyke環境(SPIKE)でのプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-raspyke)
+- [Pybricks(EV3)でのプログラム実行手順](https://github.com/takedarts/etrobo-python/wiki/install-ev3)
 
 ### ミドルウェアの使い方
 - [チュートリアル](https://github.com/takedarts/etrobo-python/wiki/tutorial)

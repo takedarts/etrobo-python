@@ -24,7 +24,8 @@ class ETRobo:
 
     - simulator: Unityのシミュレータ環境でのロボット制御
     - pybricks: micropythonを使ったEV3ロボットの制御
-    - raspike: micropythonを使ったRasPikeロボットの制御（未実装）
+    - raspike: pythonを使ったRasPikeロボットの制御（公式のmain.pyを使用する場合）
+    - raspyke: pythonを使ったRasPikeロボットの制御（非公式のmain.pyを使用する場合）
 
     **プログラム例**
 
@@ -62,6 +63,9 @@ class ETRobo:
         elif backend == 'raspike':
             from .backends import raspike
             self.backend = raspike
+        elif backend == 'raspyke':
+            from .backends import raspyke
+            self.backend = raspyke
         else:
             raise NotImplementedError(
                 'Unsupported backend: {}'.format(backend))
@@ -129,11 +133,12 @@ class ETRobo:
         self.handlers.append(handler)
         return self
 
-    def dispatch(self, interval=0.01, **kwargs) -> 'ETRobo':
+    def dispatch(self, interval=0.01, logfile=None, **kwargs) -> 'ETRobo':
         '''制御プログラムを実行する。
 
         Args:
             interval: 制御ハンドラの実行間隔
+            logfile: ログデータを保存するファイルのパス
             kwargs: バックエンドプログラムに渡される引数
 
         Returns:
@@ -143,6 +148,7 @@ class ETRobo:
             devices=self.devices,
             handlers=self.handlers,
             interval=interval,
+            logfile=logfile,
             **kwargs,
         ).dispatch()
 

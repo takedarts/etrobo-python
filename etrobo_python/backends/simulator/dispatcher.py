@@ -1,6 +1,9 @@
 import os
 from subprocess import DEVNULL, PIPE, Popen
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, List, Optional, Tuple
+
+from etrobo_python.device import Device
+from etrobo_python.log import LogWriter
 
 from .connector import connect_simulator
 
@@ -11,6 +14,7 @@ def create_dispatcher(
     interval: float = 0.01,
     course: str = 'left',
     timeout: float = 5.0,
+    logfile: Optional[str] = None,
     **kwargs,
 ) -> Any:
     return Dispatcher(
@@ -19,30 +23,40 @@ def create_dispatcher(
         interval=interval,
         course=course,
         timeout=timeout,
+        logfile=logfile,
     )
 
 
 class Dispatcher(object):
     def __init__(
         self,
-        devices: List[Tuple[str, Any]],
+        devices: List[Tuple[str, Device]],
         handlers: List[Callable[..., None]],
         interval: float,
         course: str,
         timeout: float,
+        logfile: Optional[str],
     ) -> None:
         self.devices = devices
         self.handlers = handlers
         self.interval = interval
         self.course = course
         self.timeout = timeout
+        self.logfile = logfile
 
     def dispatch(self) -> None:
         variables = {name: device for name, device in self.devices}
 
+        writer: Optional[LogWriter] = None
+        if self.logfile is not None:
+            writer = LogWriter(self.logfile, self.devices)
+
         def run_handlers():
             for handler in self.handlers:
                 handler(**variables)
+
+            if writer is not None:
+                writer.write([device for _, device in self.devices])
 
         connect_simulator(
             handler=run_handlers,
@@ -51,6 +65,9 @@ class Dispatcher(object):
             course=self.course,
             timeout=self.timeout,
         )
+
+        if writer is not None:
+            writer.close()
 
 
 def _get_remote_address() -> str:

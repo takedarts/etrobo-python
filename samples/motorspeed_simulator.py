@@ -1,6 +1,8 @@
 '''モーターの回転速度を計測するプログラム。
 ポートBに接続されたモーターを回転させ、それぞれの設定値のときの回転速度を計測する。
 '''
+import argparse
+
 from etrobo_python import ETRobo, Hub, Motor
 
 MEASURE_TIME = 10.0
@@ -45,4 +47,7 @@ def run(backend: str, **kwargs) -> None:
 
 
 if __name__ == '__main__':
-    run(backend='simulator')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--logfile', type=str, default=None, help='Path to log file')
+    args = parser.parse_args()
+    run(backend='simulator', logfile=args.logfile)

@@ -1,4 +1,3 @@
-import time
 from typing import Any, Tuple
 
 import etrobo_python
@@ -36,14 +35,30 @@ def get_raspike_port(port: str) -> int:
 class Hub(etrobo_python.Hub):
     def __init__(self):
         self.hub = connector.Hub()
-        self.base_time = time.time()
         self.log = bytearray(5)
 
     def set_led(self, color: str) -> None:
-        pass
+        if color.startswith('bla'):  # black
+            color_code = 0
+        elif color.startswith('p'):  # pink
+            color_code = 1
+        elif color.startswith('blu'):  # blue
+            color_code = 3
+        elif color.startswith('g'):  # green
+            color_code = 6
+        elif color.startswith('y'):  # yellow
+            color_code = 7
+        elif color.startswith('o'):  # orange
+            color_code = 8
+        elif color.startswith('r'):  # red
+            color_code = 9
+        else:
+            return
+
+        self.hub.set_led(color_code)
 
     def get_time(self) -> float:
-        return time.time() - self.base_time
+        return self.hub.get_time() / 1000
 
     def get_battery_voltage(self) -> int:
         return self.hub.get_battery_voltage()
@@ -52,16 +67,16 @@ class Hub(etrobo_python.Hub):
         return self.hub.get_battery_current()
 
     def play_speaker_tone(self, frequency: int, duration: float) -> None:
-        pass
+        self.hub.play_speaker_tone(frequency, int(duration * 1000))
 
     def set_speaker_volume(self, volume: int) -> None:
-        pass
+        self.hub.set_speaker_volume(min(max(volume // 10, 0), 10))
 
     def is_left_button_pressed(self) -> bool:
-        return (self.hub.get_button_pressed() & 0x01) != 0
+        return (self.hub.get_button_pressed() & 0x02) != 0
 
     def is_right_button_pressed(self) -> bool:
-        return (self.hub.get_button_pressed() & 0x02) != 0
+        return (self.hub.get_button_pressed() & 0x04) != 0
 
     def is_up_button_pressed(self) -> bool:
         return False
@@ -137,12 +152,12 @@ class ColorSensor(etrobo_python.ColorSensor):
 
 
 class TouchSensor(etrobo_python.TouchSensor):
-    def __init__(self) -> None:
-        self.touch_sensor = connector.TouchSensor()
+    def __init__(self):
+        self.hub = connector.Hub()
         self.log = bytearray(1)
 
     def is_pressed(self) -> bool:
-        return self.touch_sensor.is_pressed()
+        return (self.hub.get_button_pressed() & 0x01) != 0
 
     def get_log(self) -> bytes:
         self.log[0] = int(self.is_pressed())
@@ -158,11 +173,7 @@ class SonarSensor(etrobo_python.SonarSensor):
         return self.sonar_sensor.listen()
 
     def get_distance(self) -> int:
-        distance = self.sonar_sensor.get_distance()
-        if 0 <= distance < 255:
-            return distance
-        else:
-            return 255
+        return self.sonar_sensor.get_distance()
 
     def get_log(self) -> bytes:
         self.log[:] = int.to_bytes(self.get_distance(), 2, 'big')

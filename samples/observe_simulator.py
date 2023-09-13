@@ -1,5 +1,6 @@
-from etrobo_python import (ColorSensor, ETRobo, GyroSensor, Hub, Motor,
-                           SonarSensor, TouchSensor)
+import argparse
+
+from etrobo_python import ColorSensor, ETRobo, GyroSensor, Hub, Motor, SonarSensor, TouchSensor
 
 
 def print_obtained_values_in_simulation(
@@ -74,4 +75,7 @@ def run(backend: str, **kwargs) -> None:
 
 
 if __name__ == '__main__':
-    run(backend='simulator')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--logfile', type=str, default=None, help='Path to log file')
+    args = parser.parse_args()
+    run(backend='simulator', logfile=args.logfile)
