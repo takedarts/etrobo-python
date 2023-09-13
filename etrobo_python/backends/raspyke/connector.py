@@ -14,7 +14,7 @@ Base64でエンコードした文字列は 0x66, 0x33 で始まる
 [17-17] ultrasonic
 [18-20] gyro (angle, speed) (12bit each)
 [21-23] system info  - number(1byte) value(2bytes)
-  0: buttun status (値の1ビット目:connect, 1:left, 2:right, 3:center)
+  0: buttun status (connect=0x01, left=0x02, right=0x04, center=0x08)
   1: battery voltage
   2: battery current
 
