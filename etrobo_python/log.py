@@ -8,30 +8,6 @@ except BaseException:
     pass
 
 
-'''
-ログファイルのフォーマット
-------------------------
-- デバイスのリストのバイナリの長さ(2バイト)
-- デバイスのリストのUTF-8文字列(変数名1:デバイスタイプ1,変数名2:デバイスタイプ2,...)
-- 以下、それぞれのデバイスから取得されたデータを時刻順に並べたもの
-  -  Hub: 時刻(4バイト), ボタンの状態(1バイト)
-    - ボタンの状態: 左ボタン: 0x01, 右ボタン: 0x02, 上ボタン: 0x04, 下ボタン: 0x08
-  - Motor: モーターの回転角度(4バイト)
-  - ColorSensor: brightness(1バイト), ambient(1バイト), raw_color(1バイト * 3)
-  - TouchSensor: タッチセンサの状態(1バイト)
-  - SonarSensor: 距離(2バイト)
-  - GyroSensor: 角度(2バイト), 角速度(2バイト)
-
-[例] left_motor:motor, right_motor:motor, color_sensor:color_sensorの場合
-デバイスリストのバイナリの大きさ
-各デバイスの変数名とデバイスタイプの一覧を表すUTF-8文字列
-(left_motorの回転角度, right_motorの回転角度, color_sensorのbrightness, ambient, raw_color)
-(left_motorの回転角度, right_motorの回転角度, color_sensorのbrightness, ambient, raw_color)
-(left_motorの回転角度, right_motorの回転角度, color_sensorのbrightness, ambient, raw_color)
-...
-'''
-
-
 def _get_type_name(device: Device) -> str:
     if isinstance(device, Hub):
         return 'hub'
@@ -67,6 +43,15 @@ def _get_binary_length(device_type: str) -> int:
 
 
 class LogReader(object):
+    '''ログデータをファイルから読み込むためのクラス。
+    LogWriterで作成されたログファイルを読み込み、デバイスごとに分割したデータを取得する。
+
+    ログファイルのフォーマットについては、LogWriterの説明を参照。
+
+    Args:
+        path: ログファイルのパス
+    '''
+
     def __init__(self, path: Union[str, Path]) -> None:
         self.path = str(path)
 
@@ -87,9 +72,22 @@ class LogReader(object):
         self.reader.close()
 
     def get_devices(self) -> List[Tuple[str, str]]:
+        '''ログファイルに記録されているデバイスのリストを取得する。
+
+        Returns:
+            デバイスのリスト。
+            デバイスは(変数名, デバイスタイプ)のタプルで表現される。
+        '''
         return self.devices
 
     def read(self) -> Optional[List[bytes]]:
+        '''ログファイルからデバイスごとに分割したデータを取得する。
+
+        Returns:
+            デバイスごとに分割したデータのリスト。
+            デバイスのリストの順番はget_devices()で取得したものと同じ。
+            ログデータが壊れている（と思われる）場合はNoneを返す。
+        '''
         buffer = self.reader.read(self.offsets[-1])
 
         if len(buffer) < self.offsets[-1]:
@@ -98,6 +96,7 @@ class LogReader(object):
         return [buffer[b:e] for b, e in zip(self.offsets[:-1], self.offsets[1:])]
 
     def close(self) -> None:
+        '''ログファイルを閉じる。'''
         self.reader.close()
 
     def __iter__(self):
@@ -111,6 +110,44 @@ class LogReader(object):
 
 
 class LogWriter(object):
+    '''ログデータをファイルに書き込むためのクラス。
+    モータやセンサから取得したデータをログファイルに書き込む。
+
+    **ログファイルのフォーマット**
+
+    .. code-block:: none
+
+        デバイスのリストの文字列のバイト数(2バイト)
+        デバイスのリストのUTF-8文字列(変数名1:デバイスタイプ1,変数名2:デバイスタイプ2,...)
+        以下、それぞれのデバイスから取得されたデータを時刻順に並べたもの
+          - Hub: 時刻(4バイト), ボタンの状態(1バイト)
+            ボタンの状態: 左ボタン=0x01, 右ボタン=0x02, 上ボタン=0x04, 下ボタン=0x08
+          - Motor: モーターの回転角度(4バイト)
+          - ColorSensor: brightness(1バイト), ambient(1バイト), raw_color(1バイト * 3)
+          - TouchSensor: タッチセンサの状態(1バイト)
+          - SonarSensor: 距離(2バイト)
+          - GyroSensor: 角度(2バイト), 角速度(2バイト)
+
+    **ログデータの例**
+
+    ログデータの取得対象となるデバイスがleft_motor:motor・right_motor:motor・color_sensor:color_sensorの場合、
+    以下のログデータが作成される。
+
+    .. code-block:: none
+
+        0x003c (デバイスリストの文字列のバイト数)
+        "left_motor:motor,right_motor:motor,color_sensor:color_sensor" (UTF-8文字列)
+        (left_motorの回転角度, right_motorの回転角度, color_sensorのbrightness, ambient, raw_color)
+        (left_motorの回転角度, right_motorの回転角度, color_sensorのbrightness, ambient, raw_color)
+        (left_motorの回転角度, right_motorの回転角度, color_sensorのbrightness, ambient, raw_color)
+        ...
+
+    Args:
+        path: ログファイルのパス
+        devices: ログファイルに記録するデバイスのリスト。
+            デバイスは(変数名, デバイスオブジェクト)のタプルで指定する。
+    '''
+
     def __init__(
         self,
         path: Union[str, Path],
@@ -136,6 +173,11 @@ class LogWriter(object):
         self.writer.close()
 
     def write(self, devices: List[Device]) -> None:
+        '''デバイスから取得したデータをログファイルに書き込む。
+
+        Args:
+            devices: ログファイルに記録するデバイスのリスト。
+        '''
         for offset, device in zip(self.offsets, devices):
             binary = device.get_log()
             self.buffer[offset:offset + len(binary)] = binary
@@ -143,7 +185,9 @@ class LogWriter(object):
         self.writer.write(self.buffer)
 
     def flush(self) -> None:
+        '''ログファイルに書き込みバッファの内容を書き込む。'''
         self.writer.flush()
 
     def close(self) -> None:
+        '''ログファイルを閉じる。'''
         self.writer.close()
