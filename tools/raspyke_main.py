@@ -2,6 +2,7 @@
 import utime
 import hub
 import ubinascii
+import sys
 
 '''
 送信（観測）データ: Base64でエンコードした文字列を送受信する
@@ -415,18 +416,24 @@ class Communicator(object):
 
 
 def main():
-    # 時計アニメーションを表示する
-    hub.display.show(hub.Image.ALL_CLOCKS, delay=200, clear=True, wait=False, loop=True, fade=0)
+    try:
+        # 時計アニメーションを表示する
+        hub.display.show(hub.Image.ALL_CLOCKS, delay=200, clear=True, wait=False, loop=True, fade=0)
 
-    # オブジェクトを作成する
-    device = Device()
-    communicator = Communicator()
+        # オブジェクトを作成する
+        device = Device()
+        communicator = Communicator()
 
-    # 四角形を表示する
-    hub.display.show(hub.Image.SQUARE_SMALL)
+        # 四角形を表示する
+        hub.display.show(hub.Image.SQUARE_SMALL)
 
-    # メインループ
-    communicator.communicate(device)
+        # メインループ
+        communicator.communicate(device)
+    except BaseException as ex:
+        hub.display.show(hub.Image.NO)
+        with open('error.log', 'w') as f:
+            sys.print_exception(ex, f)
+        raise ex
 
 
 main()
