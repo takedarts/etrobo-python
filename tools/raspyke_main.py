@@ -8,7 +8,7 @@ import sys
 送信（観測）データ: Base64でエンコードした文字列を送受信する
 Base64でエンコードした文字列は 0x66, 0x33 で始まる
 [0-1] magic number (0x7f, 0x70) (12bit)
-[1] parity (4bit)
+[1] checksum (4bit)
 [2-4] time
 [5-13] motor count (A, B, C) (3 bytes each)
 [14-16] one of ambient, color, reflect, rgb (r, g, b)
@@ -21,7 +21,7 @@ Base64でエンコードした文字列は 0x66, 0x33 で始まる
 
 受信（命令）データ: バイナリデータを送受信する
 [0] magic number (0x7f)
-[1] parity
+[1] checksum
 [2-2] command
 [3-6] value
 
@@ -270,11 +270,7 @@ class Device(object):
         send_buffer[21] = report_number & 0xff
         send_buffer[22:24] = int.to_bytes(report_value & 0xffff, 2, 'big')
 
-        parity = 0
-        for i in range(2, len(send_buffer)):
-            parity |= send_buffer[i]
-
-        send_buffer[1] |= (parity | parity >> 4) & 0xf
+        send_buffer[1] |= sum(send_buffer[2:]) & 0x0f
 
 
 class Communicator(object):
@@ -368,10 +364,11 @@ class Communicator(object):
 
         # マジックナンバーをチェックする
         while self.recv_buffer[0] != MAGIC_NUMBER:
-            try:
-                offset = self.recv_buffer.index()
-            except ValueError:
-                offset = -1
+            offset = -1
+            for i, v in enumerate(self.recv_buffer[:size]):
+                if v == MAGIC_NUMBER:
+                    offset = i
+                    break
 
             if offset < 0:
                 return False
@@ -392,12 +389,8 @@ class Communicator(object):
 
             size += len(buffer)
 
-        # パリティを確認する
-        parity = 0
-        for i in range(2, len(self.recv_buffer)):
-            parity |= self.recv_buffer[i]
-
-        if parity != self.recv_buffer[1]:
+        # チェックサムを確認する
+        if self.recv_buffer[1] != sum(self.recv_buffer[2:]) & 0xff:
             return False
 
         return True

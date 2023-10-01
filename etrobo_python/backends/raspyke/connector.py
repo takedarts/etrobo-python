@@ -7,7 +7,7 @@ import serial
 送信（観測）データ: Base64でエンコードした文字列を送受信する
 Base64でエンコードした文字列は 0x66, 0x33 で始まる
 [0-1] magic number (0x7f, 0x70) (12bit)
-[1] parity (4bit)
+[1] checksum (4bit)
 [2-4] time
 [5-13] motor count (A, B, C) (3 bytes each)
 [14-16] one of ambient, color, reflect, rgb (r, g, b)
@@ -20,7 +20,7 @@ Base64でエンコードした文字列は 0x66, 0x33 で始まる
 
 受信（命令）データ: バイナリデータを送受信する
 [0] magic number (0x7f)
-[1] parity
+[1] checksum
 [2-3] command
 [3-6] value
 
@@ -135,6 +135,9 @@ class _Connector(object):
 
                 # 制御処理を実行する
                 self.handler()
+
+                # バッファにある命令データを送信する
+                self.serial.flush()
         except KeyboardInterrupt:
             print('Interrupted by keyboard.')
         finally:
@@ -184,8 +187,8 @@ class _Connector(object):
         except UnicodeDecodeError:
             return False
 
-        # パリティを確認する
-        if not self._is_valid_parity(data):
+        # チェックサムを確認する
+        if data[1] & 0xf != sum(data[2:]) & 0x0f:
             return False
 
         # 受信データを保存する
@@ -197,25 +200,12 @@ class _Connector(object):
 
         return True
 
-    def _is_valid_parity(self, buffer: bytes) -> bool:
-        parity = 0
-        for v in buffer[2:]:
-            parity |= v
-
-        parity = (parity | parity >> 4) & 0xf
-
-        return buffer[1] & 0xf == parity
-
     def send_command(self, command: int, value: int) -> None:
         self.send_data[0] = 0x7f
         self.send_data[2] = command
         self.send_data[3:7] = int.to_bytes(value & 0xffffffff, 4, 'big')
 
-        parity = 0
-        for v in self.send_data[2:]:
-            parity |= v
-
-        self.send_data[1] = parity
+        self.send_data[1] = sum(self.send_data[2:]) & 0xff
         self.serial.write(self.send_data)
 
     def send_ping_command(self, reset: bool) -> None:
