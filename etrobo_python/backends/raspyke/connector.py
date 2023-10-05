@@ -43,10 +43,8 @@ command: number - value
 0x51: gyro reset - 0
 '''
 
-# モーターの回転方向
-# モーターの設定値と取得値の方向を設定する
-# +1 か -1 を設定すること
-MOTOR_SIGN = 1
+# 同じデータを再送する回数
+RETRANSMIT = 5
 
 _CONNECTOR: Optional['_Connector'] = None
 
@@ -105,6 +103,8 @@ class _Connector(object):
 
         # シリアル通信オブジェクト
         self.serial = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
+        # pingコマンドを送信が必要ならTrue
+        self.ping_required = True
 
     def run(self) -> None:
         # シリアル通信のバッファを空にする
@@ -130,11 +130,15 @@ class _Connector(object):
                     else:
                         self.started = True
 
-                # pingコマンドを送信する
-                self.send_ping_command(reset=False)
+                # pingコマンドのフラグをリセットする
+                self.ping_required = True
 
                 # 制御処理を実行する
                 self.handler()
+
+                # 送信データが存在しないならpingコマンドを送信する
+                if self.ping_required:
+                    self.send_ping_command(reset=False)
 
                 # バッファにある命令データを送信する
                 self.serial.flush()
@@ -201,6 +205,8 @@ class _Connector(object):
         return True
 
     def send_command(self, command: int, value: int) -> None:
+        self.ping_required = False
+
         self.send_data[0] = 0x7f
         self.send_data[2] = command
         self.send_data[3:7] = int.to_bytes(value & 0xffffffff, 4, 'big')
@@ -240,6 +246,10 @@ class Hub(object):
 class Motor(object):
     def __init__(self, port: int) -> None:
         self.port = port
+        self.power_value = 0
+        self.power_retransmit = RETRANSMIT
+        self.brake_value = 0
+        self.brake_retransmit = RETRANSMIT
 
     def get_count(self) -> int:
         index = 5 + self.port * 3
@@ -251,13 +261,26 @@ class Motor(object):
         _get_connector().send_command(command=command, value=0)
 
     def set_pwm(self, power: int) -> None:
-        command = (self.port + 1) * 16 + 1
         power = min(max(power, -128), 127)
-        _get_connector().send_command(command=command, value=power)
+
+        if power != self.power_value:
+            self.power_value = power
+            self.power_retransmit = RETRANSMIT
+
+        if self.power_retransmit > 0:
+            self.power_retransmit -= 1
+            command = (self.port + 1) * 16 + 1
+            _get_connector().send_command(command=command, value=self.power_value)
 
     def set_brake(self, brake: bool) -> None:
-        command = (self.port + 1) * 16 + 2
-        _get_connector().send_command(command=command, value=int(brake))
+        if brake != self.brake_value:
+            self.brake_value = brake
+            self.brake_retransmit = RETRANSMIT
+        
+        if self.brake_retransmit > 0:
+            self.brake_retransmit -= 1
+            command = (self.port + 1) * 16 + 2
+            _get_connector().send_command(command=command, value=int(brake))
 
 
 class ColorSensor(object):
