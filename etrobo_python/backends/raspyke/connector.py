@@ -25,8 +25,8 @@ Base64でエンコードした文字列は 0x66, 0x33 で始まる
 [3-6] value
 
 command: number - value
-0x00: ping - time reset (1byte), interval (milli seconds) (3bytes)
-0x01: sound - frequency (Hz), duration (milli seconds) (2bytes each)
+0x00: ping - time reset (1byte), interval (10-200 msec) (3bytes)
+0x01: sound - frequency (Hz), duration (msec) (2bytes each)
 0x02: volume - volume (0-10)
 0x03: led - number (0-20)
 0x04: screen - number (0-20)
