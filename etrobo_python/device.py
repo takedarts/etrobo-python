@@ -10,6 +10,9 @@ class Device(object):
 
 
 class Hub(Device):
+    '''Hubの状態を取得し、LEDやスピーカーなどのデバイスを制御するためのクラス。
+    '''
+
     def set_led(self, color: str) -> None:
         '''LEDの発光色を設定する。
         発光色の名前は black, red, green, orange のいずれか。
@@ -103,6 +106,9 @@ class Hub(Device):
 
 
 class Motor(Device):
+    '''モータを制御するためのクラス。
+    '''
+
     def get_count(self) -> int:
         '''モーターの回転角度を返す。
 
@@ -133,7 +139,17 @@ class Motor(Device):
         raise NotImplementedError()
 
 
+class ReversedMotor(Motor):
+    '''モータを制御するためのクラス。
+    ただし、モーターの回転方向が逆になる。
+    '''
+    pass
+
+
 class ColorSensor(Device):
+    '''光センサの観測データを取得するためのクラス。
+    '''
+
     def get_brightness(self) -> int:
         '''反射光の測定値を返す。
 
@@ -160,6 +176,9 @@ class ColorSensor(Device):
 
 
 class TouchSensor(Device):
+    '''タッチセンサの状態を取得するためのクラス。
+    '''
+
     def is_pressed(self) -> bool:
         '''タッチセンサの測定値を返す。
 
@@ -170,6 +189,9 @@ class TouchSensor(Device):
 
 
 class SonarSensor(Device):
+    '''超音波センサの観測データを取得するためのクラス。
+    '''
+
     def listen(self) -> bool:
         '''超音波信号の受信状況を返す。
 

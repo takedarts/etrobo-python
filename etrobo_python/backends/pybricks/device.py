@@ -20,6 +20,8 @@ def create_device(device_type: str, port: str) -> Any:
 
     if device_type == 'motor':
         return Motor(ev3_port)
+    if device_type == 'reversed_motor':
+        return ReversedMotor(ev3_port)
     elif device_type == 'color_sensor':
         return ColorSensor(ev3_port)
     elif device_type == 'touch_sensor':
@@ -100,19 +102,20 @@ class Hub(etrobo_python.Hub):
         return self.log
 
 
-class Motor(etrobo_python.Motor):
-    def __init__(self, port: Port) -> None:
+class _Motor(etrobo_python.Motor):
+    def __init__(self, port: Port, reversed: bool) -> None:
         self.motor = ev3dev.Motor(port)
+        self.sign = -1 if reversed else 1
         self.log = bytearray(4)
 
     def get_count(self) -> int:
-        return self.motor.angle()
+        return self.motor.angle() * self.sign
 
     def reset_count(self) -> None:
         self.motor.reset_angle(0)
 
     def set_power(self, power: int) -> None:
-        self.motor.run(power)
+        self.motor.run(power * self.sign)
 
     def set_brake(self, brake: bool) -> None:
         if brake:
@@ -121,6 +124,16 @@ class Motor(etrobo_python.Motor):
     def get_log(self) -> bytes:
         self.log[:] = int.to_bytes(self.get_count() & 0xffffffff, 4, 'big')
         return self.log
+
+
+class Motor(_Motor):
+    def __init__(self, port: int) -> None:
+        super().__init__(port, False)
+
+
+class ReversedMotor(_Motor):
+    def __init__(self, port: int) -> None:
+        super().__init__(port, True)
 
 
 class ColorSensor(etrobo_python.ColorSensor):

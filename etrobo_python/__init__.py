@@ -1,4 +1,4 @@
-from .device import (ColorSensor, GyroSensor, Hub, Motor, SonarSensor,  # noqa
+from .device import (ColorSensor, GyroSensor, Hub, Motor, ReversedMotor, SonarSensor,  # noqa
                      TouchSensor)
 from .etrobo import ETRobo  # noqa
 
