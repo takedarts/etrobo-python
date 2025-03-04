@@ -66,6 +66,9 @@ class ETRobo:
         elif backend == 'raspyke':
             from .backends import raspyke
             self.backend = raspyke
+        elif backend == 'raspike_art':
+            from .backends import raspike_art
+            self.backend = raspike_art
         else:
             raise NotImplementedError(
                 'Unsupported backend: {}'.format(backend))
