@@ -116,8 +116,9 @@ class Hub(etrobo_python.Hub):
 class Motor(etrobo_python.Motor):
     def __init__(self, port: pbio_port) -> None:
         self.device = lib.pup_motor_get_device(port)
-        # only motor on Spike Hub port E will turn reverse direction
-        if port == pbio_port.ID_E:
+        # only motor on Spike Hub port B turns reverse direction,
+        # following the build instruction for 2025
+        if port == pbio_port.ID_B:
             lib.pup_motor_setup(self.device, pup_direction.COUNTERCLOCKWISE, True)
         else:
             lib.pup_motor_setup(self.device, pup_direction.CLOCKWISE, True)
