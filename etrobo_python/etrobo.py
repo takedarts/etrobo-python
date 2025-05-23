@@ -101,11 +101,12 @@ class ETRobo:
 
         引数 `device_type` には以下のいずれかを指定する。
 
-        - `Motor` or `'motor'` : モータを追加する
-        - `ColorSensor` or `'color_sensor'` : カラーセンサを追加する。
-        - `TouchSensor` or `'touch_sensor'` : タッチセンサを追加する。
-        - `SonarSensor` or `'sonar_sensor'` : 超音波センサを追加する。
-        - `GyroSensor` or `'gyro_sensor'` : ジャイロセンサを追加する。
+        - `Motor`: モータを追加する
+        - `ReversedMotor`: 逆回転するモータを追加する
+        - `ColorSensor`: カラーセンサを追加する。
+        - `TouchSensor`: タッチセンサを追加する。
+        - `SonarSensor`: 超音波センサを追加する。
+        - `GyroSensor`: ジャイロセンサを追加する。
 
         Args:
             name: 制御オブジェクトの名前（handlerに渡される引数名）。

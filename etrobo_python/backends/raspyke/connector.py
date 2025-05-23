@@ -7,26 +7,26 @@ import serial
 送信（観測）データ: Base64でエンコードした文字列を送受信する
 Base64でエンコードした文字列は 0x66, 0x33 で始まる
 [0-1] magic number (0x7f, 0x70) (12bit)
-[1] parity (4bit)
+[1] checksum (4bit)
 [2-4] time
 [5-13] motor count (A, B, C) (3 bytes each)
 [14-16] one of ambient, color, reflect, rgb (r, g, b)
 [17-17] ultrasonic
 [18-20] gyro (angle, speed) (12bit each)
 [21-23] system info  - number(1byte) value(2bytes)
-  0: buttun status (値の1ビット目:connect, 1:left, 2:right, 3:center)
+  0: buttun status (connect=0x01, left=0x02, right=0x04, center=0x08)
   1: battery voltage
   2: battery current
 
 受信（命令）データ: バイナリデータを送受信する
 [0] magic number (0x7f)
-[1] parity
+[1] checksum
 [2-3] command
 [3-6] value
 
 command: number - value
-0x00: ping - time reset (1byte), interval (milli seconds) (3bytes)
-0x01: sound - frequency (Hz), duration (milli seconds) (2bytes each)
+0x00: ping - time reset (1byte), interval (10-200 msec) (3bytes)
+0x01: sound - frequency (Hz), duration (msec) (2bytes each)
 0x02: volume - volume (0-10)
 0x03: led - number (0-20)
 0x04: screen - number (0-20)
@@ -43,10 +43,8 @@ command: number - value
 0x51: gyro reset - 0
 '''
 
-# モーターの回転方向
-# モーターの設定値と取得値の方向を設定する
-# +1 か -1 を設定すること
-MOTOR_SIGN = 1
+# 同じデータを再送する回数
+RETRANSMIT = 5
 
 _CONNECTOR: Optional['_Connector'] = None
 
@@ -105,6 +103,8 @@ class _Connector(object):
 
         # シリアル通信オブジェクト
         self.serial = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
+        # pingコマンドを送信が必要ならTrue
+        self.ping_required = True
 
     def run(self) -> None:
         # シリアル通信のバッファを空にする
@@ -130,11 +130,18 @@ class _Connector(object):
                     else:
                         self.started = True
 
-                # pingコマンドを送信する
-                self.send_ping_command(reset=False)
+                # pingコマンドのフラグをリセットする
+                self.ping_required = True
 
                 # 制御処理を実行する
                 self.handler()
+
+                # 送信データが存在しないならpingコマンドを送信する
+                if self.ping_required:
+                    self.send_ping_command(reset=False)
+
+                # バッファにある命令データを送信する
+                self.serial.flush()
         except KeyboardInterrupt:
             print('Interrupted by keyboard.')
         finally:
@@ -184,8 +191,8 @@ class _Connector(object):
         except UnicodeDecodeError:
             return False
 
-        # パリティを確認する
-        if not self._is_valid_parity(data):
+        # チェックサムを確認する
+        if data[1] & 0xf != sum(data[2:]) & 0x0f:
             return False
 
         # 受信データを保存する
@@ -197,25 +204,14 @@ class _Connector(object):
 
         return True
 
-    def _is_valid_parity(self, buffer: bytes) -> bool:
-        parity = 0
-        for v in buffer[2:]:
-            parity |= v
-
-        parity = (parity | parity >> 4) & 0xf
-
-        return buffer[1] & 0xf == parity
-
     def send_command(self, command: int, value: int) -> None:
+        self.ping_required = False
+
         self.send_data[0] = 0x7f
         self.send_data[2] = command
         self.send_data[3:7] = int.to_bytes(value & 0xffffffff, 4, 'big')
 
-        parity = 0
-        for v in self.send_data[2:]:
-            parity |= v
-
-        self.send_data[1] = parity
+        self.send_data[1] = sum(self.send_data[2:]) & 0xff
         self.serial.write(self.send_data)
 
     def send_ping_command(self, reset: bool) -> None:
@@ -250,6 +246,10 @@ class Hub(object):
 class Motor(object):
     def __init__(self, port: int) -> None:
         self.port = port
+        self.power_value = 0
+        self.power_retransmit = RETRANSMIT
+        self.brake_value = 0
+        self.brake_retransmit = RETRANSMIT
 
     def get_count(self) -> int:
         index = 5 + self.port * 3
@@ -261,13 +261,26 @@ class Motor(object):
         _get_connector().send_command(command=command, value=0)
 
     def set_pwm(self, power: int) -> None:
-        command = (self.port + 1) * 16 + 1
         power = min(max(power, -128), 127)
-        _get_connector().send_command(command=command, value=power)
+
+        if power != self.power_value:
+            self.power_value = power
+            self.power_retransmit = RETRANSMIT
+
+        if self.power_retransmit > 0:
+            self.power_retransmit -= 1
+            command = (self.port + 1) * 16 + 1
+            _get_connector().send_command(command=command, value=self.power_value)
 
     def set_brake(self, brake: bool) -> None:
-        command = (self.port + 1) * 16 + 2
-        _get_connector().send_command(command=command, value=int(brake))
+        if brake != self.brake_value:
+            self.brake_value = brake
+            self.brake_retransmit = RETRANSMIT
+        
+        if self.brake_retransmit > 0:
+            self.brake_retransmit -= 1
+            command = (self.port + 1) * 16 + 2
+            _get_connector().send_command(command=command, value=int(brake))
 
 
 class ColorSensor(object):
