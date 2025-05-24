@@ -1,7 +1,8 @@
+from typing import Optional
 from .device import Device
 
 try:
-    from typing import Any, Callable, List, Tuple, Type, Union
+    from typing import Any, Callable, List, Tuple, Type, Union  # noqa
 except BaseException:
     pass
 
@@ -137,14 +138,17 @@ class ETRobo:
         self.handlers.append(handler)
         return self
 
-    def dispatch(self, interval=0.01, logfile=None, **kwargs) -> 'ETRobo':
+    def dispatch(
+        self,
+        interval: float = 0.01,
+        logfile: Optional[str] = None,
+        **kwargs: Any,
+    ) -> 'ETRobo':
         '''制御プログラムを実行する。
-
         Args:
             interval: 制御ハンドラの実行間隔
             logfile: ログデータを保存するファイルのパス
             kwargs: バックエンドプログラムに渡される引数
-
         Returns:
             このオブジェクト
         '''

@@ -15,7 +15,7 @@ def create_dispatcher(
     course: str = 'left',
     timeout: float = 5.0,
     logfile: Optional[str] = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> Any:
     return Dispatcher(
         devices=devices,
@@ -51,7 +51,7 @@ class Dispatcher(object):
         if self.logfile is not None:
             writer = LogWriter(self.logfile, self.devices)
 
-        def run_handlers():
+        def run_handlers() -> None:
             for handler in self.handlers:
                 handler(**variables)
 

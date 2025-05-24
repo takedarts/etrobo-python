@@ -1,9 +1,10 @@
-from etrobo_python.device import (ColorSensor, Device, GyroSensor, Hub, Motor, SonarSensor,
-                                  TouchSensor)
+from etrobo_python.device import (ColorSensor, Device, GyroSensor, Hub, Motor,
+                                  SonarSensor, TouchSensor)
 
 try:
     from pathlib import Path
-    from typing import List, Optional, Tuple, Union
+    from typing import List, Optional, Tuple, Type, Union
+    from types import TracebackType
 except BaseException:
     pass
 
@@ -52,8 +53,8 @@ class LogReader(object):
         path: ログファイルのパス
     '''
 
-    def __init__(self, path: Union[str, Path]) -> None:
-        self.path = str(path)
+    def __init__(self, path: Union[str, Path]) -> None:  # type: ignore
+        self.path = str(path)  # type: ignore
 
         self.reader = open(self.path, 'rb')
         size = int.from_bytes(self.reader.read(2), 'big')
@@ -65,10 +66,15 @@ class LogReader(object):
         lengths = [_get_binary_length(device_type) for _, device_type in self.devices]
         self.offsets = [sum(lengths[:i]) for i in range(len(lengths) + 1)]
 
-    def __enter__(self):
+    def __enter__(self) -> 'LogReader':
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ) -> None:
         self.reader.close()
 
     def get_devices(self) -> List[Tuple[str, str]]:
@@ -99,7 +105,7 @@ class LogReader(object):
         '''ログファイルを閉じる。'''
         self.reader.close()
 
-    def __iter__(self):
+    def __iter__(self) -> 'LogReader':
         return self
 
     def __next__(self) -> List[bytes]:
@@ -150,10 +156,10 @@ class LogWriter(object):
 
     def __init__(
         self,
-        path: Union[str, Path],
+        path: Union[str, Path],  # type: ignore
         devices: List[Tuple[str, Device]],
     ) -> None:
-        self.path = str(path)
+        self.path = str(path)  # type: ignore
         self.writer = open(self.path, 'wb')
 
         device_types = [_get_type_name(device) for _, device in devices]
@@ -166,10 +172,15 @@ class LogWriter(object):
         self.writer.write(int.to_bytes(len(binary), 2, 'big'))
         self.writer.write(binary)
 
-    def __enter__(self):
+    def __enter__(self) -> 'LogWriter':
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ) -> None:
         self.writer.close()
 
     def write(self, devices: List[Device]) -> None:
