@@ -9,29 +9,29 @@ etrobo\_python.device module
 
 .. automodule:: etrobo_python.device
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 etrobo\_python.etrobo module
 ----------------------------
 
 .. automodule:: etrobo_python.etrobo
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 etrobo\_python.log module
 -------------------------
 
 .. automodule:: etrobo_python.log
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: etrobo_python
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
