@@ -3,4 +3,4 @@ from .device import (ColorSensor, GyroSensor, Hub, Motor, ReversedMotor, SonarSe
 from .etrobo import ETRobo  # noqa
 
 __author__ = 'Atsushi TAKEDA'
-__version__ = '0.5.1'
+__version__ = '0.6.0'

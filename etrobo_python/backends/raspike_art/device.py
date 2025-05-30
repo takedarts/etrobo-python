@@ -27,7 +27,13 @@ def create_device(device_type: str, port: str) -> Any:
 
 def get_raspike_port(port: str) -> pbio_port:
     port_names = ('A', 'B', 'C', 'D', 'E', 'F')
-    port_values = (pbio_port.ID_A, pbio_port.ID_B, pbio_port.ID_C, pbio_port.ID_D, pbio_port.ID_E, pbio_port.ID_F)
+    port_values = (
+        pbio_port.ID_A,
+        pbio_port.ID_B,
+        pbio_port.ID_C,
+        pbio_port.ID_D,
+        pbio_port.ID_E,
+        pbio_port.ID_F)
 
     if port in port_names:
         return port_values[port_names.index(port)]
@@ -76,7 +82,7 @@ class Hub(etrobo_python.Hub):
 
     def play_speaker_tone(self, frequency: int, duration: float) -> None:
         if duration > 0:
-            lib.hub_speaker_play_tone(frequency, int(1000*duration))
+            lib.hub_speaker_play_tone(frequency, int(1000 * duration))
         else:
             lib.hub_speaker_play_tone(frequency, sound.MANUAL_STOP)
 
@@ -97,7 +103,7 @@ class Hub(etrobo_python.Hub):
 
     def get_acceleration(self) -> Tuple[float, float, float]:
         return lib.hub_imu_get_acceleration()
-    
+
     def get_angular_velocity(self) -> Tuple[float, float, float]:
         return lib.hub_imu_get_angular_velocity()
 

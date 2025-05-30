@@ -1,19 +1,18 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>etrobo_python.device &mdash; etrobo-python 0.5 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>etrobo_python.device &mdash; etrobo-python 0.6.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+      <script src="../../_static/documentation_options.js?v=8fa8b3e9"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -24,11 +23,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> etrobo-python
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            etrobo-python
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -52,9 +55,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>etrobo_python.device</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">etrobo_python.device</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -70,14 +73,27 @@
     <span class="k">pass</span>
 
 
-<div class="viewcode-block" id="Device"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Device">[docs]</a><span class="k">class</span> <span class="nc">Device</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="Device.get_log"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Device.get_log">[docs]</a>    <span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+<div class="viewcode-block" id="Device">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Device">[docs]</a>
+<span class="k">class</span> <span class="nc">Device</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Device.get_log">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Device.get_log">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+</div>
 
 
-<div class="viewcode-block" id="Hub"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub">[docs]</a><span class="k">class</span> <span class="nc">Hub</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-<div class="viewcode-block" id="Hub.set_led"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.set_led">[docs]</a>    <span class="k">def</span> <span class="nf">set_led</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;LEDの発光色を設定する。</span>
+
+<div class="viewcode-block" id="Hub">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub">[docs]</a>
+<span class="k">class</span> <span class="nc">Hub</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Hubの状態を取得し、LEDやスピーカーなどのデバイスを制御するためのクラス。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="Hub.set_led">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.set_led">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_led</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;LEDの発光色を設定する。</span>
 <span class="sd">        発光色の名前は black, red, green, orange のいずれか。</span>
 
 <span class="sd">        Args:</span>
@@ -85,8 +101,11 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Hub.get_time"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.get_time">[docs]</a>    <span class="k">def</span> <span class="nf">get_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;現在時刻を返す。</span>
+
+<div class="viewcode-block" id="Hub.get_time">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.get_time">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;現在時刻を返す。</span>
 <span class="sd">        シミュレータ環境の場合は、シミュレータ上での時刻を返す。</span>
 
 <span class="sd">        Returns:</span>
@@ -94,8 +113,11 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Hub.get_battery_voltage"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.get_battery_voltage">[docs]</a>    <span class="k">def</span> <span class="nf">get_battery_voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;バッテリーの出力電圧を返す。</span>
+
+<div class="viewcode-block" id="Hub.get_battery_voltage">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.get_battery_voltage">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_battery_voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;バッテリーの出力電圧を返す。</span>
 <span class="sd">        シミュレータ環境の場合は常に8000mVを返す。</span>
 
 <span class="sd">        Return:</span>
@@ -103,8 +125,11 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Hub.get_battery_current"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.get_battery_current">[docs]</a>    <span class="k">def</span> <span class="nf">get_battery_current</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;バッテリーの出力電流を返す。</span>
+
+<div class="viewcode-block" id="Hub.get_battery_current">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.get_battery_current">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_battery_current</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;バッテリーの出力電流を返す。</span>
 <span class="sd">        シミュレータ環境の場合は常に200mAを返す。</span>
 
 <span class="sd">        Return:</span>
@@ -112,8 +137,11 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Hub.play_speaker_tone"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.play_speaker_tone">[docs]</a>    <span class="k">def</span> <span class="nf">play_speaker_tone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;スピーカーからビープ音を鳴らす。</span>
+
+<div class="viewcode-block" id="Hub.play_speaker_tone">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.play_speaker_tone">[docs]</a>
+    <span class="k">def</span> <span class="nf">play_speaker_tone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;スピーカーからビープ音を鳴らす。</span>
 <span class="sd">        シミュレータ環境の場合は何もしない。</span>
 
 <span class="sd">        Args:</span>
@@ -122,8 +150,11 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Hub.set_speaker_volume"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.set_speaker_volume">[docs]</a>    <span class="k">def</span> <span class="nf">set_speaker_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;スピーカーの音量を設定する。</span>
+
+<div class="viewcode-block" id="Hub.set_speaker_volume">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.set_speaker_volume">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_speaker_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;スピーカーの音量を設定する。</span>
 <span class="sd">        シミュレータ環境の場合は何もしない。</span>
 
 <span class="sd">        Args:</span>
@@ -131,8 +162,11 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Hub.is_left_button_pressed"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.is_left_button_pressed">[docs]</a>    <span class="k">def</span> <span class="nf">is_left_button_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;左ボタンの状態を返す。</span>
+
+<div class="viewcode-block" id="Hub.is_left_button_pressed">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.is_left_button_pressed">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_left_button_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;左ボタンの状態を返す。</span>
 <span class="sd">        左ボタンが押されていればTrueを返し、押されていなければFalseを返す。</span>
 
 <span class="sd">        Returns:</span>
@@ -140,8 +174,11 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Hub.is_right_button_pressed"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.is_right_button_pressed">[docs]</a>    <span class="k">def</span> <span class="nf">is_right_button_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;右ボタンの状態を返す。</span>
+
+<div class="viewcode-block" id="Hub.is_right_button_pressed">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.is_right_button_pressed">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_right_button_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;右ボタンの状態を返す。</span>
 <span class="sd">        右ボタンが押されていればTrueを返し、押されていなければFalseを返す。</span>
 
 <span class="sd">        Returns:</span>
@@ -149,8 +186,11 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Hub.is_up_button_pressed"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.is_up_button_pressed">[docs]</a>    <span class="k">def</span> <span class="nf">is_up_button_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;上ボタンの状態を返す。</span>
+
+<div class="viewcode-block" id="Hub.is_up_button_pressed">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.is_up_button_pressed">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_up_button_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;上ボタンの状態を返す。</span>
 <span class="sd">        上ボタンが押されていればTrueを返し、押されていなければFalseを返す。</span>
 
 <span class="sd">        Returns:</span>
@@ -158,122 +198,203 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Hub.is_down_button_pressed"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.is_down_button_pressed">[docs]</a>    <span class="k">def</span> <span class="nf">is_down_button_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;下ボタンの状態を返す。</span>
+
+<div class="viewcode-block" id="Hub.is_down_button_pressed">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Hub.is_down_button_pressed">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_down_button_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;下ボタンの状態を返す。</span>
 <span class="sd">        下ボタンが押されていればTrueを返し、押されていなければFalseを返す。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            下ボタンの状態。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+</div>
 
 
-<div class="viewcode-block" id="Motor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor">[docs]</a><span class="k">class</span> <span class="nc">Motor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-<div class="viewcode-block" id="Motor.get_count"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor.get_count">[docs]</a>    <span class="k">def</span> <span class="nf">get_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;モーターの回転角度を返す。</span>
+
+<div class="viewcode-block" id="Motor">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor">[docs]</a>
+<span class="k">class</span> <span class="nc">Motor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;モータを制御するためのクラス。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="Motor.get_count">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor.get_count">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;モーターの回転角度を返す。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            モーターの回転角度（単位はdeg）。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Motor.reset_count"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor.reset_count">[docs]</a>    <span class="k">def</span> <span class="nf">reset_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;モータの回転角度の値を0に設定する。</span>
+
+<div class="viewcode-block" id="Motor.reset_count">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor.reset_count">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;モータの回転角度の値を0に設定する。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Motor.set_power"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor.set_power">[docs]</a>    <span class="k">def</span> <span class="nf">set_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;モーターの回転力を設定する。</span>
+
+<div class="viewcode-block" id="Motor.set_power">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor.set_power">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;モーターの回転力を設定する。</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            power: モーターの回転力。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Motor.set_brake"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor.set_brake">[docs]</a>    <span class="k">def</span> <span class="nf">set_brake</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">brake</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;ブレーキモードを設定する。</span>
+
+<div class="viewcode-block" id="Motor.set_brake">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.Motor.set_brake">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_brake</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">brake</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;ブレーキモードを設定する。</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            brake: Trueを指定した場合はブレーキモードとなる。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+</div>
 
 
-<div class="viewcode-block" id="ColorSensor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.ColorSensor">[docs]</a><span class="k">class</span> <span class="nc">ColorSensor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-<div class="viewcode-block" id="ColorSensor.get_brightness"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.ColorSensor.get_brightness">[docs]</a>    <span class="k">def</span> <span class="nf">get_brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;反射光の測定値を返す。</span>
+
+<div class="viewcode-block" id="ReversedMotor">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.ReversedMotor">[docs]</a>
+<span class="k">class</span> <span class="nc">ReversedMotor</span><span class="p">(</span><span class="n">Motor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;モータを制御するためのクラス。</span>
+<span class="sd">    ただし、モーターの回転方向が逆になる。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="ColorSensor">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.ColorSensor">[docs]</a>
+<span class="k">class</span> <span class="nc">ColorSensor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;光センサの観測データを取得するためのクラス。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="ColorSensor.get_brightness">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.ColorSensor.get_brightness">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;反射光の測定値を返す。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            反射光の測定値。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ColorSensor.get_ambient"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.ColorSensor.get_ambient">[docs]</a>    <span class="k">def</span> <span class="nf">get_ambient</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;環境光の測定値を返す。</span>
+
+<div class="viewcode-block" id="ColorSensor.get_ambient">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.ColorSensor.get_ambient">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_ambient</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;環境光の測定値を返す。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            環境光の測定値。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ColorSensor.get_raw_color"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.ColorSensor.get_raw_color">[docs]</a>    <span class="k">def</span> <span class="nf">get_raw_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&#39;&#39;&#39;RGBの測定値を返す。</span>
+
+<div class="viewcode-block" id="ColorSensor.get_raw_color">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.ColorSensor.get_raw_color">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_raw_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;RGBの測定値を返す。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            測定された(Red, Green, Blue)の値。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+</div>
 
 
-<div class="viewcode-block" id="TouchSensor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.TouchSensor">[docs]</a><span class="k">class</span> <span class="nc">TouchSensor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-<div class="viewcode-block" id="TouchSensor.is_pressed"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.TouchSensor.is_pressed">[docs]</a>    <span class="k">def</span> <span class="nf">is_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;タッチセンサの測定値を返す。</span>
+
+<div class="viewcode-block" id="TouchSensor">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.TouchSensor">[docs]</a>
+<span class="k">class</span> <span class="nc">TouchSensor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;タッチセンサの状態を取得するためのクラス。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="TouchSensor.is_pressed">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.TouchSensor.is_pressed">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;タッチセンサの測定値を返す。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            タッチセンサが押されていればTrue。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+</div>
 
 
-<div class="viewcode-block" id="SonarSensor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.SonarSensor">[docs]</a><span class="k">class</span> <span class="nc">SonarSensor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-<div class="viewcode-block" id="SonarSensor.listen"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.SonarSensor.listen">[docs]</a>    <span class="k">def</span> <span class="nf">listen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;超音波信号の受信状況を返す。</span>
+
+<div class="viewcode-block" id="SonarSensor">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.SonarSensor">[docs]</a>
+<span class="k">class</span> <span class="nc">SonarSensor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;超音波センサの観測データを取得するためのクラス。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="SonarSensor.listen">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.SonarSensor.listen">[docs]</a>
+    <span class="k">def</span> <span class="nf">listen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;超音波信号の受信状況を返す。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            超音波信号を受信できていればTrue。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SonarSensor.get_distance"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.SonarSensor.get_distance">[docs]</a>    <span class="k">def</span> <span class="nf">get_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;超音波信号によって測定された物体までの距離を返す。</span>
+
+<div class="viewcode-block" id="SonarSensor.get_distance">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.SonarSensor.get_distance">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;超音波信号によって測定された物体までの距離を返す。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            超音波信号によって測定された物体までの距離（単位はmm）。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+</div>
 
 
-<div class="viewcode-block" id="GyroSensor"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor">[docs]</a><span class="k">class</span> <span class="nc">GyroSensor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-<div class="viewcode-block" id="GyroSensor.reset"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;ジャイロセンサの角速度を0度にセットする。</span>
+
+<div class="viewcode-block" id="GyroSensor">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor">[docs]</a>
+<span class="k">class</span> <span class="nc">GyroSensor</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<div class="viewcode-block" id="GyroSensor.reset">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor.reset">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;ジャイロセンサの角速度を0度にセットする。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GyroSensor.get_angle"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor.get_angle">[docs]</a>    <span class="k">def</span> <span class="nf">get_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;ジャイロセンサで測定された現在の角度を返す。</span>
+
+<div class="viewcode-block" id="GyroSensor.get_angle">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor.get_angle">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;ジャイロセンサで測定された現在の角度を返す。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            測定された現在の角度（単位はdeg）。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GyroSensor.get_angler_velocity"><a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor.get_angler_velocity">[docs]</a>    <span class="k">def</span> <span class="nf">get_angler_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&#39;&#39;&#39;ジャイロセンサで測定された角速度を返す。</span>
+
+<div class="viewcode-block" id="GyroSensor.get_angler_velocity">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor.get_angler_velocity">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_angler_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;ジャイロセンサで測定された角速度を返す。</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            測定された角速度（単位はdeg）。</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+</div>
+
 </pre></div>
 
            </div>

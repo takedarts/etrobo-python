@@ -20,10 +20,10 @@ except ImportError:
 def create_device(device_type: str, port: str) -> Any:
     if device_type == 'hub':
         return Hub()
-    elif device_type == 'motor':
-        return Motor(get_sim_port(port))
+    elif device_type == 'motor' or device_type == 'normal_motor':
+        return NormalMotor(*get_motor_settings(port))
     elif device_type == 'reversed_motor':
-        return ReversedMotor(get_sim_port(port))
+        return ReversedMotor(*get_motor_settings(port))
     elif device_type == 'color_sensor':
         return ColorSensor()
     elif device_type == 'touch_sensor':
@@ -36,12 +36,22 @@ def create_device(device_type: str, port: str) -> Any:
         raise NotImplementedError(f'Unsupported device: {device_type}')
 
 
-def get_sim_port(port: str) -> int:
+def get_motor_settings(port: str) -> Tuple[int, bool]:
+    '''モータのポート番号と方向を返す。
+    Args:
+        port (str): モータのポート名（例：'A', 'B', 'C', 'D', '1', '2', '3', '4'）。
+    Returns:
+        Tuple[int, bool]: ポート番号と方向を示すブール値のタプル。
+    Raises:
+        Exception: ポートが不明な場合。
+    '''
     port_names = ('A', 'B', 'C', 'D', '1', '2', '3', '4')
-    port_values = (0, 1, 2, 3, -1, -1, -1, -1)
+    port_numbers = (2, 0, 1, 3, -1, -1, -1, -1)
+    port_directions = (False, False, True, False, True, True, True, True)
 
     if port in port_names:
-        return port_values[port_names.index(port)]
+        port_index = port_names.index(port)
+        return port_numbers[port_index], port_directions[port_index]
     else:
         raise Exception(f'Unknown port: {port}')
 
@@ -59,7 +69,7 @@ def play_beep_sound(freq: float, duration: float, volume: float) -> None:
 
 
 class Hub(etrobo_python.Hub):
-    def __init__(self):
+    def __init__(self) -> None:
         self.hub = connector.Hub()
         self.volume = 1.0
         self.log = bytearray(5)
@@ -112,7 +122,7 @@ class Hub(etrobo_python.Hub):
         return self.log
 
 
-class _Motor(etrobo_python.Motor):
+class Motor(etrobo_python.Motor):
     def __init__(self, port: int, reversed: bool) -> None:
         self.motor = connector.Motor(port)
         self.sign = -1 if reversed else 1
@@ -135,14 +145,14 @@ class _Motor(etrobo_python.Motor):
         return self.log
 
 
-class Motor(_Motor):
-    def __init__(self, port: int) -> None:
-        super().__init__(port, False)
+class NormalMotor(Motor):
+    def __init__(self, port: int, direction: bool = False) -> None:
+        super().__init__(port, direction)
 
 
-class ReversedMotor(_Motor):
-    def __init__(self, port: int) -> None:
-        super().__init__(port, True)
+class ReversedMotor(Motor):
+    def __init__(self, port: int, direction: bool = False) -> None:
+        super().__init__(port, not direction)
 
 
 class ColorSensor(etrobo_python.ColorSensor):

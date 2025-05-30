@@ -14,7 +14,7 @@ def create_dispatcher(
     handlers: List[Callable[..., None]],
     interval: float = 0.04,
     logfile: Optional[str] = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> Any:
     return Dispatcher(
         devices=devices,
