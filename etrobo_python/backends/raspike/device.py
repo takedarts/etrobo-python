@@ -36,7 +36,7 @@ def get_raspike_port(port: str) -> int:
 
 
 class Hub(etrobo_python.Hub):
-    def __init__(self):
+    def __init__(self) -> None:
         self.hub = connector.Hub()
         self.base_time = time.time()
         self.log = bytearray(5)

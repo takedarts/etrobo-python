@@ -1,13 +1,10 @@
-import threading
 import time
-from typing import Any, Tuple
+from typing import Any, List, Tuple
 
 import etrobo_python
 
 import libraspike_art_python as lib
 from libraspike_art_python import pbio_port, pbio_color, hub_button, sound, pup_direction
-
-_USB_PORT: str = '/dev/USB_SPIKE'
 
 
 def create_device(device_type: str, port: str) -> Any:
@@ -15,6 +12,8 @@ def create_device(device_type: str, port: str) -> Any:
         return Hub()
     elif device_type == 'motor':
         return Motor(get_raspike_port(port))
+    elif device_type == 'reversed_motor':
+        return ReversedMotor(get_raspike_port(port))
     elif device_type == 'color_sensor':
         return ColorSensor(get_raspike_port(port))
     elif device_type == 'touch_sensor':
@@ -43,22 +42,8 @@ def get_raspike_port(port: str) -> pbio_port:
 
 class Hub(etrobo_python.Hub):
     def __init__(self) -> None:
-        self.desc = lib.raspike_open_usb_communication(_USB_PORT)
-        if self.desc is None:
-            raise Exception(
-                'USB port unable to open')
-        lib.raspike_prot_init(self.desc)
-        self.receiver_thread = threading.Thread(
-            target=self._receiver_thread,
-            name='Raspike_hub_receiver',
-            daemon=True)
-        self.receiver_thread.start()
         self.base_time = time.time()
         self.log = bytearray(5)
-
-    def _receiver_thread(self) -> None:
-        while True:
-            lib.raspike_prot_receive()
 
     def set_led(self, color: str) -> None:
         color_value = color.lower()[0]
@@ -119,56 +104,96 @@ class Hub(etrobo_python.Hub):
         return self.log
 
 
-class Motor(etrobo_python.Motor):
-    def __init__(self, port: pbio_port) -> None:
-        self.device = lib.pup_motor_get_device(port)
-        # only motor on Spike Hub port B turns reverse direction,
-        # following the build instruction for 2025
-        if port == pbio_port.ID_B:
-            lib.pup_motor_setup(self.device, pup_direction.COUNTERCLOCKWISE, True)
-        else:
-            lib.pup_motor_setup(self.device, pup_direction.CLOCKWISE, True)
+_MOTOR_DEVICES: List[Any] = []
+
+
+def stop_all_motors() -> None:
+    global _MOTOR_DEVICES
+
+    for device in _MOTOR_DEVICES:
+        lib.pup_motor_stop(device)
+
+
+class _Motor(etrobo_python.Motor):
+    def __init__(self, port: pbio_port, reversed: bool) -> None:
+        self.port = port
+        self.reversed = reversed
+        self.device: Any = None
         self.brake = False
         self.log = bytearray(4)
 
+        # Only motor on Spike Hub port B turns reverse direction,
+        # following the build instruction for 2025
+        if self.port == pbio_port.ID_B:
+            self.reversed = not reversed
+
+    def setup_device(self) -> None:
+        global _MOTOR_DEVICES
+
+        if self.device is None:
+            self.device = lib.pup_motor_get_device(self.port)
+
+            if self.reversed:
+                lib.pup_motor_setup(self.device, pup_direction.COUNTERCLOCKWISE, True)
+            else:
+                lib.pup_motor_setup(self.device, pup_direction.CLOCKWISE, True)
+
+            _MOTOR_DEVICES.append(self.device)
+
     def get_count(self) -> int:
+        self.setup_device()
         return lib.pup_motor_get_count(self.device)
 
     def reset_count(self) -> None:
+        self.setup_device()
         lib.pup_motor_reset_count(self.device)
 
     def set_power(self, power: int) -> None:
-        if power == 0:
-            if self.brake:
-                lib.pup_motor_brake(self.device)
-            else:
-                lib.pup_motor_stop(self.device)
-        else:
-            lib.pup_motor_set_power(self.device, power)
+        self.setup_device()
+        lib.pup_motor_set_power(self.device, power)
 
     def set_brake(self, brake: bool) -> None:
-        self.brake = brake
+        self.setup_device()
+        lib.pup_motor_brake(self.device, brake)
 
     def get_log(self) -> bytes:
         self.log[:] = int.to_bytes(self.get_count() & 0xffffffff, 4, 'big')
         return self.log
 
 
+class Motor(_Motor):
+    def __init__(self, port: int) -> None:
+        super().__init__(port, False)
+
+
+class ReversedMotor(_Motor):
+    def __init__(self, port: int) -> None:
+        super().__init__(port, True)
+
+
 class ColorSensor(etrobo_python.ColorSensor):
     def __init__(self, port: pbio_port) -> None:
-        self.device = lib.pup_color_sensor_get_device(port)
+        self.port = port
+        self.device: Any = None
         self.mode = -1
         self.log = bytearray(5)
 
+    def setup_device(self) -> None:
+        if self.device is None:
+            self.device = lib.pup_color_sensor_get_device(self.port)
+
     def get_brightness(self) -> int:
+        self.setup_device()
         self.mode = 0
         return lib.pup_color_sensor_reflection(self.device)
 
     def get_ambient(self) -> int:
+        self.setup_device()
         self.mode = 1
         return lib.pup_color_sensor_ambient(self.device)
 
     def get_raw_color(self) -> Tuple[int, int, int]:
+        self.setup_device()
         self.mode = 2
         return lib.pup_color_sensor_rgb(self.device)
 
@@ -191,10 +216,16 @@ class ColorSensor(etrobo_python.ColorSensor):
 
 class TouchSensor(etrobo_python.TouchSensor):
     def __init__(self, port: pbio_port) -> None:
-        self.device = lib.pup_force_sensor_get_device(port)
+        self.port = port
+        self.device: Any = None
         self.log = bytearray(1)
 
+    def setup_device(self) -> None:
+        if self.device is None:
+            self.device = lib.pup_force_sensor_get_device(self.port)
+
     def is_pressed(self) -> bool:
+        self.setup_device()
         return lib.pup_force_sensor_touched(self.device)
 
     def get_log(self) -> bytes:
@@ -204,13 +235,20 @@ class TouchSensor(etrobo_python.TouchSensor):
 
 class SonarSensor(etrobo_python.SonarSensor):
     def __init__(self, port: pbio_port) -> None:
-        self.device = lib.pup_ultrasonic_sensor_get_device(port)
+        self.port = port
+        self.device: Any = None
         self.log = bytearray(2)
 
+    def setup_device(self) -> None:
+        if self.device is None:
+            self.device = lib.pup_ultrasonic_sensor_get_device(self.port)
+
     def listen(self) -> bool:
+        self.setup_device()
         return lib.pup_ultrasonic_sensor_presence(self.device)
 
     def get_distance(self) -> int:
+        self.setup_device()
         return lib.pup_ultrasonic_sensor_distance(self.device)
 
     def get_log(self) -> bytes:

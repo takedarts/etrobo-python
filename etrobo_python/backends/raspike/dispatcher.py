@@ -14,7 +14,7 @@ def create_dispatcher(
     baudrate: int = 115_200,
     timeout: float = 5.0,
     logfile: Optional[str] = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> Any:
     return Dispatcher(
         devices=devices,
