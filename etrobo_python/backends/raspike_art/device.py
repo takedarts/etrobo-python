@@ -1,5 +1,5 @@
 import time
-from typing import Any, Tuple
+from typing import Any, List, Tuple
 
 import etrobo_python
 
@@ -104,6 +104,16 @@ class Hub(etrobo_python.Hub):
         return self.log
 
 
+_MOTOR_DEVICES: List[Any] = []
+
+
+def stop_all_motors() -> None:
+    global _MOTOR_DEVICES
+
+    for device in _MOTOR_DEVICES:
+        lib.pup_motor_stop(device)
+
+
 class _Motor(etrobo_python.Motor):
     def __init__(self, port: pbio_port, reversed: bool) -> None:
         self.port = port
@@ -118,6 +128,8 @@ class _Motor(etrobo_python.Motor):
             self.reversed = not reversed
 
     def setup_device(self) -> None:
+        global _MOTOR_DEVICES
+
         if self.device is None:
             self.device = lib.pup_motor_get_device(self.port)
 
@@ -125,6 +137,8 @@ class _Motor(etrobo_python.Motor):
                 lib.pup_motor_setup(self.device, pup_direction.COUNTERCLOCKWISE, True)
             else:
                 lib.pup_motor_setup(self.device, pup_direction.CLOCKWISE, True)
+
+            _MOTOR_DEVICES.append(self.device)
 
     def get_count(self) -> int:
         self.setup_device()

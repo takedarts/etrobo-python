@@ -3,6 +3,7 @@ import time
 from typing import Callable
 
 import libraspike_art_python as lib
+from .device import stop_all_motors
 
 
 class Connector(object):
@@ -63,6 +64,7 @@ class Connector(object):
             print('Stopped by handler.')
         except KeyboardInterrupt:
             print('Interrupted by keyboard.')
+            stop_all_motors()
         finally:
             self.terminated = True
 
