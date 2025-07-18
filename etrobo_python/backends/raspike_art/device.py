@@ -154,7 +154,8 @@ class _Motor(etrobo_python.Motor):
 
     def set_brake(self, brake: bool) -> None:
         self.setup_device()
-        lib.pup_motor_brake(self.device, brake)
+        if brake:
+            lib.pup_motor_brake(self.device)
 
     def get_log(self) -> bytes:
         self.log[:] = int.to_bytes(self.get_count() & 0xffffffff, 4, 'big')
