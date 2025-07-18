@@ -5,12 +5,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>etrobo_python.device &mdash; etrobo-python 0.6.1 documentation</title>
+  <title>etrobo_python.device &mdash; etrobo-python 0.6.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
-      <script src="../../_static/documentation_options.js?v=2bd037f0"></script>
+      <script src="../../_static/documentation_options.js?v=1c28bd9a"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -384,10 +384,22 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="GyroSensor.get_angular_velocity">
+<a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor.get_angular_velocity">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_angular_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;ジャイロセンサで測定された角速度を返す。</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            測定された角速度（単位はdeg）。</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="GyroSensor.get_angler_velocity">
 <a class="viewcode-back" href="../../etrobo_python.html#etrobo_python.device.GyroSensor.get_angler_velocity">[docs]</a>
     <span class="k">def</span> <span class="nf">get_angler_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;ジャイロセンサで測定された角速度を返す。</span>
+<span class="sd">        @deprecated: Use get_angular_velocity instead.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            測定された角速度（単位はdeg）。</span>

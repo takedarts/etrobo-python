@@ -6,12 +6,12 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>etrobo_python package &mdash; etrobo-python 0.6.1 documentation</title>
+  <title>etrobo_python package &mdash; etrobo-python 0.6.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
-      <script src="_static/documentation_options.js?v=2bd037f0"></script>
+      <script src="_static/documentation_options.js?v=1c28bd9a"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -57,6 +57,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#etrobo_python.device.GyroSensor"><code class="docutils literal notranslate"><span class="pre">GyroSensor</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#etrobo_python.device.GyroSensor.get_angle"><code class="docutils literal notranslate"><span class="pre">GyroSensor.get_angle()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#etrobo_python.device.GyroSensor.get_angler_velocity"><code class="docutils literal notranslate"><span class="pre">GyroSensor.get_angler_velocity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#etrobo_python.device.GyroSensor.get_angular_velocity"><code class="docutils literal notranslate"><span class="pre">GyroSensor.get_angular_velocity()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#etrobo_python.device.GyroSensor.reset"><code class="docutils literal notranslate"><span class="pre">GyroSensor.reset()</span></code></a></li>
 </ul>
 </li>
@@ -222,6 +223,18 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="etrobo_python.device.GyroSensor.get_angler_velocity">
 <span class="sig-name descname"><span class="pre">get_angler_velocity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/etrobo_python/device.html#GyroSensor.get_angler_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.device.GyroSensor.get_angler_velocity" title="Link to this definition">¶</a></dt>
+<dd><p>ジャイロセンサで測定された角速度を返す。
+&#64;deprecated: Use get_angular_velocity instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>測定された角速度（単位はdeg）。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="etrobo_python.device.GyroSensor.get_angular_velocity">
+<span class="sig-name descname"><span class="pre">get_angular_velocity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/etrobo_python/device.html#GyroSensor.get_angular_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#etrobo_python.device.GyroSensor.get_angular_velocity" title="Link to this definition">¶</a></dt>
 <dd><p>ジャイロセンサで測定された角速度を返す。</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -484,7 +497,7 @@
 <li><p>pybricks: micropythonを使ったEV3ロボットの制御</p></li>
 <li><p>raspike: pythonを使ったRasPikeロボットの制御（公式のmain.pyを使用する場合）</p></li>
 <li><p>raspyke: pythonを使ったRasPikeロボットの制御（非公式のmain.pyを使用する場合）</p></li>
-<li><p>raspike-art: pythonを使ったRasPike-ARTロボットの制御</p></li>
+<li><p>raspike_art: pythonを使ったRasPike-ARTロボットの制御</p></li>
 </ul>
 <p><strong>プログラム例</strong></p>
 <p>制御対象としてHUBタイプのデバイス「body」とmotorタイプのデバイス「motor1」を登録した場合、
