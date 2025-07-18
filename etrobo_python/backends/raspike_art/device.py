@@ -20,6 +20,8 @@ def create_device(device_type: str, port: str) -> Any:
         return TouchSensor(get_raspike_port(port))
     elif device_type == 'sonar_sensor':
         return SonarSensor(get_raspike_port(port))
+    elif device_type == 'gyro_sensor':
+        return GyroSensor()
     else:
         raise NotImplementedError(f'Unsupported device: {device_type}')
 
@@ -254,4 +256,23 @@ class SonarSensor(etrobo_python.SonarSensor):
 
     def get_log(self) -> bytes:
         self.log[:] = int.to_bytes(self.get_distance(), 2, 'big')
+        return self.log
+
+
+class GyroSensor(etrobo_python.GyroSensor):
+    def __init__(self) -> None:
+        self.log = bytearray(4)
+
+    def reset(self) -> None:
+        pass
+
+    def get_angle(self) -> int:
+        return 0
+
+    def get_angler_velocity(self) -> int:
+        return round(lib.hub_imu_get_angular_velocity()[1])
+
+    def get_log(self) -> bytes:
+        self.log[:2] = int.to_bytes(self.get_angle(), 2, 'big', signed=True)
+        self.log[2:] = int.to_bytes(self.get_angler_velocity(), 2, 'big', signed=True)
         return self.log

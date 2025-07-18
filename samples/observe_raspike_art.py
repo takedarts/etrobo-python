@@ -1,8 +1,8 @@
 import argparse
 from typing import Any
 
-from etrobo_python import (ColorSensor, ETRobo, Hub, Motor, SonarSensor,
-                           TouchSensor)
+from etrobo_python import (ColorSensor, ETRobo, GyroSensor, Hub, Motor,
+                           SonarSensor, TouchSensor)
 
 
 def print_obtained_values_in_realworld(
@@ -12,9 +12,10 @@ def print_obtained_values_in_realworld(
     touch_sensor: TouchSensor,
     color_sensor: ColorSensor,
     sonar_sensor: SonarSensor,
+    gyro_sensor: GyroSensor,
 ) -> None:
-    x_accel, y_accel, z_accel = hub.get_acceleration()
-    x_angv, y_angv, z_angv = hub.get_angular_velocity()
+    x_accel, y_accel, z_accel = hub.get_acceleration()  # type: ignore
+    x_angv, y_angv, z_angv = hub.get_angular_velocity()  # type: ignore
     lines = [
         'Hub: time={}'.format(hub.get_time()),
         'Hub: battery_voltage={}'.format(hub.get_battery_voltage()),
@@ -26,7 +27,10 @@ def print_obtained_values_in_realworld(
         'TouchSensor: pressed={}'.format(touch_sensor.is_pressed()),
         'ColorSensor: raw_color={}'.format(color_sensor.get_raw_color()),
         'SonarSensor: distance={}'.format(sonar_sensor.get_distance()),
+        'GyroSensor: angular_velocity={}'.format(gyro_sensor.get_angler_velocity())
     ]
+
+    right_motor.set_brake(True)
 
     print('\n'.join(lines))
 
@@ -39,6 +43,7 @@ def run(backend: str, **kwargs: Any) -> None:
      .add_device(name='touch_sensor', device_type=TouchSensor, port='D')
      .add_device(name='color_sensor', device_type=ColorSensor, port='E')
      .add_device(name='sonar_sensor', device_type=SonarSensor, port='F')
+     .add_device(name='gyro_sensor', device_type=GyroSensor, port='')
      .add_handler(print_obtained_values_in_realworld)
      .dispatch(**kwargs))
 
