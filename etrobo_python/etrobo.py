@@ -27,6 +27,7 @@ class ETRobo:
     - pybricks: micropythonを使ったEV3ロボットの制御
     - raspike: pythonを使ったRasPikeロボットの制御（公式のmain.pyを使用する場合）
     - raspyke: pythonを使ったRasPikeロボットの制御（非公式のmain.pyを使用する場合）
+    - raspike-art: pythonを使ったRasPike-ARTロボットの制御
 
     **プログラム例**
 

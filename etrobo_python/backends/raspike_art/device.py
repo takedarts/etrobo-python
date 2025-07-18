@@ -1,5 +1,6 @@
 import time
 from typing import Any, List, Tuple
+import warnings
 
 import etrobo_python
 
@@ -20,6 +21,8 @@ def create_device(device_type: str, port: str) -> Any:
         return TouchSensor(get_raspike_port(port))
     elif device_type == 'sonar_sensor':
         return SonarSensor(get_raspike_port(port))
+    elif device_type == 'gyro_sensor':
+        return GyroSensor()
     else:
         raise NotImplementedError(f'Unsupported device: {device_type}')
 
@@ -154,7 +157,8 @@ class _Motor(etrobo_python.Motor):
 
     def set_brake(self, brake: bool) -> None:
         self.setup_device()
-        lib.pup_motor_brake(self.device, brake)
+        if brake:
+            lib.pup_motor_brake(self.device)
 
     def get_log(self) -> bytes:
         self.log[:] = int.to_bytes(self.get_count() & 0xffffffff, 4, 'big')
@@ -253,4 +257,29 @@ class SonarSensor(etrobo_python.SonarSensor):
 
     def get_log(self) -> bytes:
         self.log[:] = int.to_bytes(self.get_distance(), 2, 'big')
+        return self.log
+
+
+class GyroSensor(etrobo_python.GyroSensor):
+    def __init__(self) -> None:
+        self.log = bytearray(4)
+
+    def reset(self) -> None:
+        pass
+
+    def get_angle(self) -> int:
+        return 0
+
+    def get_angular_velocity(self) -> int:
+        return round(lib.hub_imu_get_angular_velocity()[1])
+
+    def get_angler_velocity(self) -> int:
+        warnings.warn(
+            'get_angler_velocity is deprecated, use get_angular_velocity instead.',
+            DeprecationWarning)
+        return self.get_angular_velocity()
+
+    def get_log(self) -> bytes:
+        self.log[:2] = int.to_bytes(self.get_angle(), 2, 'big', signed=True)
+        self.log[2:] = int.to_bytes(self.get_angler_velocity(), 2, 'big', signed=True)
         return self.log
