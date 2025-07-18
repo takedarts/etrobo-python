@@ -1,4 +1,5 @@
 import base64
+import warnings
 from typing import Callable, Optional, Tuple
 
 import serial
@@ -276,7 +277,7 @@ class Motor(object):
         if brake != self.brake_value:
             self.brake_value = brake
             self.brake_retransmit = RETRANSMIT
-        
+
         if self.brake_retransmit > 0:
             self.brake_retransmit -= 1
             command = (self.port + 1) * 16 + 2
@@ -314,7 +315,7 @@ class ColorSensor(object):
 
 
 class SonarSensor(object):
-    def __init__(self):
+    def __init__(self) -> None:
         self.mode = 0
 
     def listen(self) -> bool:
@@ -337,7 +338,7 @@ class GyroSensor(object):
         else:
             return value - 0x1000
 
-    def get_angler_velocity(self) -> int:
+    def get_angular_velocity(self) -> int:
         value = int.from_bytes(_get_connector().recv_data[18:21], 'big')
         value = value & 0x0fff
 
@@ -345,3 +346,9 @@ class GyroSensor(object):
             return value
         else:
             return value - 0x1000
+
+    def get_angler_velocity(self) -> int:
+        warnings.warn(
+            'get_angler_velocity is deprecated, use get_angular_velocity instead.',
+            DeprecationWarning)
+        return self.get_angular_velocity()

@@ -223,8 +223,17 @@ class GyroSensor(Device):
         '''
         raise NotImplementedError()
 
+    def get_angular_velocity(self) -> int:
+        '''ジャイロセンサで測定された角速度を返す。
+
+        Returns:
+            測定された角速度（単位はdeg）。
+        '''
+        raise NotImplementedError()
+
     def get_angler_velocity(self) -> int:
         '''ジャイロセンサで測定された角速度を返す。
+        @deprecated: Use get_angular_velocity instead.
 
         Returns:
             測定された角速度（単位はdeg）。

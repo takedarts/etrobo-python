@@ -1,5 +1,6 @@
 import threading
 import time
+import warnings
 from typing import Callable, Optional, Tuple
 
 import serial
@@ -334,5 +335,9 @@ class GyroSensor(object):
     def get_angle(self) -> int:
         return _get_connector().recv_data[6]
 
-    def get_angler_velocity(self) -> int:
+    def get_angular_velocity(self) -> int:
         return _get_connector().recv_data[7]
+
+    def get_angler_velocity(self) -> int:
+        warnings.warn('get_angler_velocity is deprecated, use get_angular_velocity instead.', DeprecationWarning)
+        return self.get_angular_velocity()

@@ -1,10 +1,10 @@
 import time
+import warnings
 
+import etrobo_python
 import pybricks.ev3devices as ev3dev
 import pybricks.hubs as hubs
 from pybricks.parameters import Button, Color, Port
-
-import etrobo_python
 
 try:
     from typing import Any, Tuple
@@ -211,8 +211,14 @@ class GyroSensor(etrobo_python.GyroSensor):
     def get_angle(self) -> int:
         return self.gyro_sensor.angle()
 
-    def get_angler_velocity(self) -> int:
+    def get_angular_velocity(self) -> int:
         return self.gyro_sensor.speed()
+
+    def get_angler_velocity(self) -> int:
+        warnings.warn(
+            'get_angler_velocity is deprecated, use get_angular_velocity instead.',
+            DeprecationWarning)
+        return self.get_angular_velocity()
 
     def get_log(self) -> bytes:
         self.log[:2] = int.to_bytes(self.get_angle() & 0xffff, 2, 'big')
