@@ -38,7 +38,7 @@ def create_device(device_type: str, port: str) -> Any:
         raise NotImplementedError(f'Unsupported device: {device_type}')
 
 
-def get_motor_settings(port: str) -> Tuple[int, bool]:
+def get_motor_settings(port: str) -> Tuple[int, bool, bool]:
     '''モータのポート番号と方向を返す。
     Args:
         port (str): モータのポート名（例：'A', 'B', 'C', 'D', '1', '2', '3', '4'）。
@@ -49,11 +49,16 @@ def get_motor_settings(port: str) -> Tuple[int, bool]:
     '''
     port_names = ('A', 'B', 'C', 'D', '1', '2', '3', '4')
     port_numbers = (2, 0, 1, 3, -1, -1, -1, -1)
-    port_directions = (False, False, True, False, True, True, True, True)
+    power_reversed = (False, False, True, False, False, False, False, False)
+    count_reversed = (False, False, False, False, False, False, False, False)
 
     if port in port_names:
         port_index = port_names.index(port)
-        return port_numbers[port_index], port_directions[port_index]
+        return (
+            port_numbers[port_index],
+            power_reversed[port_index],
+            count_reversed[port_index],
+        )
     else:
         raise Exception(f'Unknown port: {port}')
 
@@ -125,19 +130,25 @@ class Hub(etrobo_python.Hub):
 
 
 class Motor(etrobo_python.Motor):
-    def __init__(self, port: int, reversed: bool) -> None:
+    def __init__(
+        self,
+        port: int,
+        reversed_power: bool,
+        reversed_count: bool,
+    ) -> None:
         self.motor = connector.Motor(port)
-        self.sign = -1 if reversed else 1
+        self.power_sign = -1 if reversed_power else 1
+        self.count_sign = -1 if reversed_count else 1
         self.log = bytearray(4)
 
     def get_count(self) -> int:
-        return self.motor.get_count() * self.sign
+        return self.motor.get_count() * self.count_sign
 
     def reset_count(self) -> None:
         self.motor.reset_count()
 
     def set_power(self, power: int) -> None:
-        self.motor.set_pwm(power * self.sign)
+        self.motor.set_pwm(power * self.power_sign)
 
     def set_brake(self, brake: bool) -> None:
         self.motor.set_brake(brake)
@@ -148,13 +159,23 @@ class Motor(etrobo_python.Motor):
 
 
 class NormalMotor(Motor):
-    def __init__(self, port: int, direction: bool = False) -> None:
-        super().__init__(port, direction)
+    def __init__(
+        self,
+        port: int,
+        reversed_power: bool = False,
+        reversed_count: bool = False,
+    ) -> None:
+        super().__init__(port, reversed_power, reversed_count)
 
 
 class ReversedMotor(Motor):
-    def __init__(self, port: int, direction: bool = False) -> None:
-        super().__init__(port, not direction)
+    def __init__(
+        self,
+        port: int,
+        reversed_power: bool = False,
+        reversed_count: bool = False,
+    ) -> None:
+        super().__init__(port, not reversed_power, not reversed_count)
 
 
 class ColorSensor(etrobo_python.ColorSensor):
