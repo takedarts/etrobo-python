@@ -230,6 +230,11 @@ class ColorSensor(etrobo_python.ColorSensor):
         self.mode = 2
         return lib.pup_color_sensor_rgb(self.device)
 
+    def get_raw_color_hsv(self) -> Tuple[int, int, int]:
+        self.setup_device()
+        self.mode = 2
+        return lib.pup_color_sensor_hsv(self.device, True)
+
     def get_log(self) -> bytes:
         if self.mode == 0:
             self.log[0] = self.get_brightness()
