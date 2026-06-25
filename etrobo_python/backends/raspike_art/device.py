@@ -5,8 +5,7 @@ import warnings
 import etrobo_python
 
 import libraspike_art_python as lib
-from libraspike_art_python import pbio_port, pbio_color, hub_button, sound, pup_direction
-
+from libraspike_art_python import pbio_port, pbio_color, hub_button, sound, pup_direction, pbio_error
 
 def create_device(device_type: str, port: str) -> Any:
     if device_type == 'hub':
@@ -88,12 +87,42 @@ class Hub(etrobo_python.Hub):
 
     def is_down_button_pressed(self) -> bool:
         return lib.hub_button_is_pressed(hub_button.CENTER)
-
-    def get_acceleration(self) -> Tuple[float, float, float]:
+    
+    def hub_imu_init(self) -> pbio_error:
+        return lib.hub_imu_init()
+    
+    def hub_imu_is_ready(self) -> bool:
+        return lib.hub_imu_is_ready()
+    
+    def hub_imu_is_stationary(self) -> bool:
+        return lib.hub_imu_is_stationary()
+    
+    def hub_imu_set_tilt(self, angle: float) -> None:
+        lib.hub_imu_set_tilt(angle)
+    
+    def hub_imu_get_acceleration(self) -> Tuple[float, float, float]:
         return lib.hub_imu_get_acceleration()
 
-    def get_angular_velocity(self) -> Tuple[float, float, float]:
+    def get_acceleration(self) -> Tuple[float, float, float]:
+        warnings.warn(
+            'get_acceleration is deprecated, use hub_imu_get_acceleration instead.',
+            DeprecationWarning)
+        return lib.hub_imu_get_acceleration()
+
+    def hub_imu_get_angular_velocity(self) -> Tuple[float, float, float]:
         return lib.hub_imu_get_angular_velocity()
+    
+    def get_angular_velocity(self) -> Tuple[float, float, float]:
+        warnings.warn(
+            'get_angular_velocity is deprecated, use hub_imu_get_angular_velocity instead.',
+            DeprecationWarning)
+        return lib.hub_imu_get_angular_velocity()
+    
+    def hub_imu_get_heading(self) -> float:
+        return lib.hub_imu_get_heading()
+    
+    def hub_imu_reset_heading(self) -> None:
+        lib.hub_imu_reset_heading()
 
     def get_log(self) -> bytes:
         self.log[:4] = int.to_bytes(int(self.get_time() * 1000), 4, 'big')
@@ -201,6 +230,11 @@ class ColorSensor(etrobo_python.ColorSensor):
         self.mode = 2
         return lib.pup_color_sensor_rgb(self.device)
 
+    def get_raw_color_hsv(self) -> Tuple[int, int, int]:
+        self.setup_device()
+        self.mode = 2
+        return lib.pup_color_sensor_hsv(self.device, True)
+
     def get_log(self) -> bytes:
         if self.mode == 0:
             self.log[0] = self.get_brightness()
@@ -263,23 +297,45 @@ class SonarSensor(etrobo_python.SonarSensor):
 class GyroSensor(etrobo_python.GyroSensor):
     def __init__(self) -> None:
         self.log = bytearray(4)
+        self.initialized = False
+    
+    def __initialize(self) -> None:
+        lib.hub_imu_init()
+        # HackSPi's hub is tilted at ~51 degrees.
+        lib.hub_imu_set_tilt(51.0)
+        # Wait for IMU to become ready
+        while not lib.hub_imu_is_ready():
+            print(".", end="")
+            time.sleep(0.1)
+        print("IMU is ready.")
+        self.initialized = True
 
     def reset(self) -> None:
-        pass
+        if not self.initialized:
+            self.__initialize()
+        lib.hub_imu_reset_heading()
 
     def get_angle(self) -> int:
-        return 0
+        if not self.initialized:
+            self.__initialize()
+        return round(lib.hub_imu_get_heading())
 
     def get_angular_velocity(self) -> int:
+        if not self.initialized:
+            self.__initialize()
         return round(lib.hub_imu_get_angular_velocity()[1])
 
     def get_angler_velocity(self) -> int:
         warnings.warn(
             'get_angler_velocity is deprecated, use get_angular_velocity instead.',
             DeprecationWarning)
+        if not self.initialized:
+            self.__initialize()
         return self.get_angular_velocity()
 
     def get_log(self) -> bytes:
+        if not self.initialized:
+            self.__initialize()
         self.log[:2] = int.to_bytes(self.get_angle(), 2, 'big', signed=True)
-        self.log[2:] = int.to_bytes(self.get_angler_velocity(), 2, 'big', signed=True)
+        self.log[2:] = int.to_bytes(self.get_angular_velocity(), 2, 'big', signed=True)
         return self.log

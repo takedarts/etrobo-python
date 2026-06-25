@@ -27,7 +27,8 @@ def print_obtained_values_in_realworld(
         'TouchSensor: pressed={}'.format(touch_sensor.is_pressed()),
         'ColorSensor: raw_color={}'.format(color_sensor.get_raw_color()),
         'SonarSensor: distance={}'.format(sonar_sensor.get_distance()),
-        'GyroSensor: angular_velocity={}'.format(gyro_sensor.get_angler_velocity())
+        'GyroSensor: angular_velocity={}'.format(gyro_sensor.get_angular_velocity()),
+        'GyroSensor: angle={}'.format(gyro_sensor.get_angle())
     ]
 
     right_motor.set_brake(True)
